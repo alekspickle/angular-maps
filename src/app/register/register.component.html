@@ -1,0 +1,23 @@
+<form #form="ngForm">
+  <label>
+    <input [(ngModel)]="model.email" #email="ngModel" name="email" required minlength="4" type="text"> E-mail
+    <div *ngIf="email.invalid && (email.dirty)" class="error">
+      <span *ngIf="email.errors.required">E-mail is required</span>
+    </div>
+  </label>
+  <label>
+    <input [(ngModel)]="model.name" #name="ngModel" name="name" required minlength="4" type="text"> Name
+    <div *ngIf="name.invalid && (name.dirty)" class="error">
+      <span *ngIf="name.errors.required">Name is required</span>
+    </div>
+  </label>
+  <label>
+    <input [(ngModel)]="model.password" #password="ngModel" name="password" required minlength="8" type="text"> Password
+    <div *ngIf="password.invalid && (password.dirty)" class="error">
+      <span *ngIf="password.errors.required">For sure password is required anyway.</span>
+    </div>
+  </label>
+  <div>
+    <button (click)="onRegister()" type="submit" save>Register</button>
+  </div>
+</form>

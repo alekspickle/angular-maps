@@ -1,0 +1,15 @@
+<form #form="ngForm">
+  <div *ngIf="(password.invalid && password.dirty || email.invalid && email.dirty) && !model.isMatch" class="error">
+    <span *ngIf="email.errors.required">Field is required</span>
+  </div>
+  <label>
+    <input [(ngModel)]="model.email" #email="ngModel" name="email" required minlength="4" type="text"> E-mail
+  </label>
+  <label>
+    <input [(ngModel)]="model.password" #password="ngModel" name="password" required minlength="8" type="text"> Password
+  </label>
+  <div>
+    <button routerLink="/register" type="button" save>Register</button>
+    <button (click)="onSubmit()" type="submit" save>Submit</button>
+  </div>
+</form>

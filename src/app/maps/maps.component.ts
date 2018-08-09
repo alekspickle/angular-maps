@@ -1,4 +1,10 @@
-import { AfterViewInit,ElementRef, Component, OnInit, ViewChild } from "@angular/core";
+import {
+  AfterViewInit,
+  ElementRef,
+  Component,
+  OnInit,
+  ViewChild
+} from "@angular/core";
 import { Observable } from "rxjs";
 import { UserService } from "../user.service";
 
@@ -9,7 +15,7 @@ type Pos = { lat: number; lng: number };
   templateUrl: "./maps.component.html",
   styleUrls: ["./maps.component.css"]
 })
-export class MapsComponent implements OnInit {
+export class MapsComponent implements OnInit, AfterViewInit {
   @ViewChild("gmap") gmapElement: any;
   mapRef: google.maps.Map;
   bounds: google.maps.LatLngBounds;
@@ -24,6 +30,8 @@ export class MapsComponent implements OnInit {
   constructor(private userData: UserService) {}
 
   ngOnInit() {
+    const { lat, lng } = this.pos;
+
     this.userData.getUsers().subscribe(data => (this.user$ = data));
 
     if (navigator.geolocation) {
@@ -32,9 +40,17 @@ export class MapsComponent implements OnInit {
         this.pos.lng = pos.coords.longitude;
       });
     }
+
+    //   const mapProp = {
+    //     center: new google.maps.LatLng(lat, lng),
+    //     zoom: 15,
+    //     mapTypeId: google.maps.MapTypeId.ROADMAP
+    //   };
+    //   this.map = new google.maps.Map(this.gmapElement.nativeElement, mapProp);
+    // }
   }
 
-  static _mapCenter(lat: number, lng: number) {
+  _mapCenter(lat: number, lng: number) {
     return new google.maps.LatLng(lat, lng);
   }
 
@@ -45,15 +61,15 @@ export class MapsComponent implements OnInit {
     });
   }
 
-  // ngAfterViewInit() {
-  //   this.map = new google.maps.Map(this.mapCanvas.nativeElement, {
-  //     zoom: 11,
-  //     center: MapsComponent._mapCenter(this.pos.lat, this.pos.lng),
-  //     disableDefaultUI: true
-  //   });
+  ngAfterViewInit() {
+    this.map = new google.maps.Map(this.map.nativeElement, {
+      zoom: 11,
+      center: this._mapCenter(this.pos.lat, this.pos.lng),
+      disableDefaultUI: true
+    });
 
-  //   this.map.addListener("click", (event: google.maps.MouseEvent) => {
-  //     this._placeMarker({ lat: event.latLng.lat(), lng: event.latLng.lng() });
-  //   });
-  // }
+    this.map.addListener("click", (event: google.maps.MouseEvent) => {
+      this._placeMarker({ lat: event.latLng.lat(), lng: event.latLng.lng() });
+    });
+  }
 }

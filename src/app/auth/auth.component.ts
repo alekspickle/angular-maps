@@ -8,20 +8,23 @@ import { AuthService } from "../auth.service";
   styleUrls: ["./auth.component.css"]
 })
 export class AuthComponent implements OnInit {
-  user$: Object;
+  users$: Object;
   email: string;
   password: string;
-  result: string;
+  result: Object;
+  isAuthorized: boolean;
+
   model = new AuthService("", "");
   constructor(private userData: UserService) {}
 
   onSubmit() {
     const { email, password } = this.model;
+    this.userData.login(email, password).subscribe(e => (this.result = e));
     console.log("hello", email, password);
   }
-  
+
   ngOnInit() {
-    this.userData.getUsers().subscribe(data => (this.user$ = data));
-    console.log('data', this.user$);
+    this.userData.getUsers().subscribe(data => this.users$ = data);
+    console.log("data", this.users$ || "no data");
   }
 }

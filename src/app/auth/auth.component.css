@@ -44,5 +44,6 @@ button:hover {
 }
 
 .error {
-  color: #ff0;
+  font-size: 0.5em;
+  color: #f00;
 }

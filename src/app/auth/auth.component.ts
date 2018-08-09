@@ -11,6 +11,7 @@ export class AuthComponent implements OnInit {
   user$: Object;
   email: string;
   password: string;
+  result: string;
   model = new AuthService("", "");
   constructor(private userData: UserService) {}
 
@@ -21,6 +22,6 @@ export class AuthComponent implements OnInit {
   
   ngOnInit() {
     this.userData.getUsers().subscribe(data => (this.user$ = data));
-    console.log();
+    console.log('data', this.user$);
   }
 }

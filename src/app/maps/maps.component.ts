@@ -1,3 +1,4 @@
+declare const google: any;
 import {
   AfterViewInit,
   ElementRef,
@@ -63,7 +64,7 @@ export class MapsComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.map = new google.maps.Map(this.map.nativeElement, {
+    this.map = new google.maps.Map(this.gmapElement.nativeElement, {
       zoom: 11,
       center: this._mapCenter(this.pos.lat, this.pos.lng),
       disableDefaultUI: true

@@ -6,3 +6,11 @@ p {
   font-size: 2em;
   text-align: center;
 }
+a {
+  display: block;
+  text-align: center;
+  margin: 3em;
+  text-decoration: none;
+  color: black;
+  font-size: 2em;
+}

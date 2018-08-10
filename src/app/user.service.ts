@@ -15,8 +15,7 @@ const config = {
 })
 export class UserService {
   currentUser: Object;
-  loggedIn: Object;
-  public isAuthenticated: boolean = false;
+  isAuthorized: boolean = false;
 
   constructor(public http: HttpClient) {}
 
@@ -36,14 +35,10 @@ export class UserService {
       })
       .pipe(logged => {
         console.log("user", logged);
-        // this.loggedIn = map(logged)
-
-        if (logged) {
-          // store user details and jwt token in local storage to keep user logged in between page refreshes
-          localStorage.setItem("currentUser", JSON.stringify(logged));
-        }
-
         return logged;
+      })
+      .subscribe(result => {
+        this._setIsLogged(result);
       });
   }
   createUser(user: RegisterService) {
@@ -65,5 +60,12 @@ export class UserService {
 
   createLocation(location: any) {
     return this.http.post(`${config.url}/location/create`, location);
+  }
+
+  _setIsLogged(result): Observable<Object> {
+    return (this.isAuthorized = result.login);
+  }
+  _setCurrentUser(result): Observable<Object> {
+    return (this.currentUser = result.user);
   }
 }

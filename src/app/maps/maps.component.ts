@@ -1,15 +1,13 @@
-declare const google: any;
 import {
   AfterViewInit,
-  ElementRef,
   Component,
   OnInit,
   ViewChild
 } from "@angular/core";
 import { } from '@types/googlemaps'
-import { Observable } from "rxjs";
 import { UserService } from "../user.service";
 
+declare const google: any;
 type Pos = { lat: number; lng: number };
 
 @Component({
@@ -23,6 +21,7 @@ export class MapsComponent implements OnInit, AfterViewInit {
   bounds: google.maps.LatLngBounds;
   latLng: google.maps.LatLng;
   user$: Object;
+  userLocations$: Object;
   private pos: Pos = {
     lat: 46.4598865,
     lng: 30.5717048
@@ -43,13 +42,7 @@ export class MapsComponent implements OnInit, AfterViewInit {
       });
     }
 
-    //   const mapProp = {
-    //     center: new google.maps.LatLng(lat, lng),
-    //     zoom: 15,
-    //     mapTypeId: google.maps.MapTypeId.ROADMAP
-    //   };
-    //   this.map = new google.maps.Map(this.gmapElement.nativeElement, mapProp);
-    // }
+    
   }
 
   _mapCenter(lat: number, lng: number) {

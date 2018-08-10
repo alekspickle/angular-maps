@@ -6,13 +6,15 @@ form {
   box-shadow: 0 0 3px #8134f8;
   justify-content: center;
   padding: 10px;
-  padding-left: 18%;
   background-color: #0fb3ff;
   color: #3353d4;
   font-size: 2em;
 }
 label {
   margin: 2%;
+  margin-left: 31.5%;
+  display: flex;
+  justify-content: space-between;
 }
 input {
   border-radius: 5px;
@@ -46,4 +48,20 @@ button:hover {
 .error {
   font-size: 0.5em;
   color: #f00;
+}
+.header{
+  margin-left: 3%;
+  text-align: center;
+}
+.button-block{
+  display: flex;
+  justify-content: space-between;
+}
+a {
+  display: block;
+  text-align: center;
+  margin: 3em;
+  text-decoration: none;
+  color: black;
+  font-size: 2em;
 }

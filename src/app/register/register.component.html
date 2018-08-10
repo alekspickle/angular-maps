@@ -1,6 +1,5 @@
 <form #form="ngForm">
-  <div>Register</div>
-
+  <div class="header">Register</div>
   <label>
     <input [(ngModel)]="model.email" #email="ngModel" name="email" required minlength="4" type="text"> E-mail
     <div *ngIf="email.invalid && (email.dirty)" class="error">
@@ -19,7 +18,6 @@
       <span *ngIf="password.errors.required">For sure password is required anyway.</span>
     </div>
   </label>
-  <div>
-    <button (click)="onRegister()" type="submit" save>Register</button>
-  </div>
+  <button (click)="onRegister()" type="submit" save>Register</button>
 </form>
+<a href="#" routerLink="/author">About author</a>

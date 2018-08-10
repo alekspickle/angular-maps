@@ -9,6 +9,7 @@ import { AuthComponent } from "./auth/auth.component";
 import { MapsComponent } from "./maps/maps.component";
 import { AboutAuthorComponent } from "./about-author/about-author.component";
 import { RegisterComponent } from './register/register.component';
+import { LocationsComponent } from './locations/locations.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import { RegisterComponent } from './register/register.component';
     AuthComponent,
     MapsComponent,
     AboutAuthorComponent,
-    RegisterComponent
+    RegisterComponent,
+    LocationsComponent
   ],
   imports: [BrowserModule, FormsModule, HttpClientModule, AppRoutingModule],
   providers: [],

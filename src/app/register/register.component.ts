@@ -11,6 +11,7 @@ export class RegisterComponent implements OnInit {
   email: string;
   name: string;
   password: string;
+  isRegistered : boolean = false;
 
   model = new RegisterService("", "", "");
 
@@ -19,7 +20,9 @@ export class RegisterComponent implements OnInit {
   onRegister() {
     this.userData
       .createUser(this.model)
-      .subscribe(e => console.log("create user response", e));
+      .subscribe(e => {
+        this.isRegistered = e.registered
+        console.log("create user response", e)});
     console.log("REGISTER");
   }
   

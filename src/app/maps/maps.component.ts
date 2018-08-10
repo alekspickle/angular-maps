@@ -5,6 +5,7 @@ import {
   OnInit,
   ViewChild
 } from "@angular/core";
+import { } from '@types/googlemaps'
 import { Observable } from "rxjs";
 import { UserService } from "../user.service";
 

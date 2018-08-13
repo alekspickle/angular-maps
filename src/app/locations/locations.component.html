@@ -1,4 +1,12 @@
 <p>Your locations</p>
 <ul>
-  <li *ngFor="let location of locations">{{location.name}}</li>
+  <li *ngFor="let location of locations">
+    <p>{{location.name}}</p>
+    <img (click)="handleEdit(location)" class="edit" alt="edit icon" src="../../assets/edit.png" />
+  </li>
 </ul>
+<div>
+  <button (click)="handleSaveLocations()" type="button" save>Save my locations</button>
+  <button (click)="handleDiscardChanges()" type="button" save>Discard changes</button>
+  <button (click)="handleToggleShow()" type="button" save>{{showText}}</button>
+</div>

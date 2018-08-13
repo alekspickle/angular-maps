@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { RegisterService } from "./register.service";
 import { Headers } from "@angular/http";
+import { Router } from "@angular/router";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 
@@ -17,7 +18,7 @@ export class UserService {
   currentUser: Object;
   isAuthorized: boolean = false;
 
-  constructor(public http: HttpClient) {}
+  constructor(public http: HttpClient, public router: Router) {}
 
   private getHeaders() {
     let headers = new Headers();
@@ -27,21 +28,19 @@ export class UserService {
     return headers;
   }
 
-  login(email: string, password: string) {
+  login(email: string, password: string){
     return this.http
       .post(`${config.url}/auth/login`, {
         email: email,
         password: password
       })
-      .pipe(logged => {
-        console.log("user", logged);
-        return logged;
-      })
       .subscribe(result => {
+        console.log('login result',result)
         this._setIsLogged(result);
+        this._setCurrentUser(result)
       });
   }
-  createUser(user: RegisterService) {
+  register(user: RegisterService) {
     return this.http.post(`${config.url}/auth/register`, user);
   }
   logout() {
@@ -63,6 +62,7 @@ export class UserService {
   }
 
   _setIsLogged(result): Observable<Object> {
+    if(result.login) this.router.navigate(['/map'])
     return (this.isAuthorized = result.login);
   }
   _setCurrentUser(result): Observable<Object> {

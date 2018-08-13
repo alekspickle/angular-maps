@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, AfterViewInit, OnChanges } from "@angular/core";
 import { Router } from "@angular/router";
 import { UserService } from "../user.service";
 import { AuthService } from "../auth.service";
@@ -8,7 +8,7 @@ import { AuthService } from "../auth.service";
   templateUrl: "./auth.component.html",
   styleUrls: ["./auth.component.css"]
 })
-export class AuthComponent implements OnInit {
+export class AuthComponent implements OnInit, AfterViewInit, OnChanges {
   users$: any;
   email: string;
   password: string;
@@ -18,7 +18,7 @@ export class AuthComponent implements OnInit {
   constructor(private userData: UserService, private router: Router) {}
   onSubmit() {
     const { email, password } = this.model;
-    this.userData.login(email, password)
+    this.userData.login(email, password);
   }
   //TEST IF THERE ARE USERS
   check() {
@@ -26,11 +26,16 @@ export class AuthComponent implements OnInit {
   }
 
   ngOnInit() {
-    const {isAuthorized} = this.userData
-    if (isAuthorized) this.router.navigate(["/map"]);
-
     this.userData.getUsers().subscribe(data => {
       this.users$ = data;
     });
+  }
+  ngAfterViewInit() {
+    const { isAuthorized } = this.userData;
+    // if (isAuthorized) this.router.navigate(["/map"]);
+  }
+  ngOnChanges(){
+    const { isAuthorized } = this.userData;
+    console.log(isAuthorized);
   }
 }

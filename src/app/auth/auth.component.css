@@ -48,6 +48,7 @@ button:hover {
 .error {
   font-size: 0.5em;
   color: #f00;
+  text-align: center;
 }
 .header{
   margin-left: 3%;

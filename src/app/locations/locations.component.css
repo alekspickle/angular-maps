@@ -1,14 +1,38 @@
 ul {
   list-style-type: none;
   margin: 5% auto;
-  padding: 0
+  padding: 0;
 }
 li {
-  font-size: 2em;
-  margin: 1em;
+  margin: 0.5em;
+  display: flex;
+  align-items: flex-end;
 }
 p {
   text-align: center;
   font-size: 3em;
   margin: 0 auto;
+}
+li p {
+  font-size: 2em;
+  margin: 0 auto;
+  display: inline;
+}
+div {
+  text-align: center;
+}
+div button {
+  color: #9f0;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  padding: 3%;
+  background-color: #0fb3ff;
+  margin: 2%;
+  cursor: pointer;
+}
+.edit {
+  width: 2em;
+  height: 2em;
+  cursor: pointer;
 }

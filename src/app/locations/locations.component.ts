@@ -34,13 +34,26 @@ const mockLocations = [
   styleUrls: ["./locations.component.css"]
 })
 export class LocationsComponent implements OnInit {
-  locations: Array<Object> = mockLocations;
+  locations: Object[] = mockLocations;
 
+  newLocations: Object[] = []
+
+  showText: string = "Hide";
   constructor(private userService: UserService) {}
+  handleSaveLocations() {}
+  handleDiscardChanges() {}
 
+  handleToggleShow() {
+    const { showText } = this;
+    if (showText === "Hide") this.showText = "Show";
+    else this.showText = "Hide";
+  }
+  handleEdit(loc){
+    console.log("edit location",loc)
+  }
   ngOnInit() {
-    const user = this.userService.currentUser
-    
+    const user = this.userService.currentUser;
+
     // this.userService.getUserLocations(user).subscribe(locations => {
     //   console.log('locations fetched', locations)
     // })

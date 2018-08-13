@@ -50,6 +50,7 @@ export class MapsComponent implements OnInit, AfterViewInit {
   }
 
   _placeMarker(location: Pos) {
+    
     return new google.maps.Marker({
       position: location,
       map: this.map

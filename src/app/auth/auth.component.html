@@ -2,16 +2,16 @@
   <div class="header">Login</div>
   <label>
       <input [(ngModel)]="model.email" #email="ngModel" name="email" required minlength="4" type="text"> E-mail
-      <div *ngIf="email.invalid && (email.dirty)" class="error">
-        <span *ngIf="email.errors.required">E-mail is required</span>
-      </div>
     </label>
+        <div *ngIf="email.invalid && (email.dirty)" class="error">
+          <span *ngIf="email.errors.required">E-mail is required</span>
+        </div>
     <label>
       <input [(ngModel)]="model.password" #password="ngModel" name="password" required minlength="8" type="text"> Password
-      <div *ngIf="password.invalid && (password.dirty)" class="error">
-        <span *ngIf="password.errors.required">For sure password is required anyway.</span>
-      </div>
     </label>
+        <div *ngIf="password.invalid && (password.dirty)" class="error">
+          <span *ngIf="password.errors.required">For sure password is required anyway.</span>
+        </div>
   <div class="button-block">
     <button routerLink="/register" type="button" save>Register</button>
     <button (click)="onSubmit()" [routerLink]=" isAuthorized ? ['/map'] : []" type="submit" save>Submit</button>

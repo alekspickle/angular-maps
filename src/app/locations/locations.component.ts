@@ -1,41 +1,14 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, AfterContentChecked } from "@angular/core";
 import { UserService } from "../user.service";
 import { LocationService } from "../location.service";
-
-const mockLocations = [
-  {
-    name: "somewhere",
-    type: "restaurant",
-    lat: 46.4598865,
-    lng: 30.5717048
-  },
-  {
-    name: "anywhere",
-    type: "park",
-    lat: 46.4599865,
-    lng: 30.5718048
-  },
-  {
-    name: "elsewhere",
-    type: "beach",
-    lat: 46.460865,
-    lng: 30.5719048
-  },
-  {
-    name: "softwhere",
-    type: "restaurant",
-    lat: 46.460165,
-    lng: 30.5720048
-  }
-];
 
 @Component({
   selector: "app-locations",
   templateUrl: "./locations.component.html",
   styleUrls: ["./locations.component.css"]
 })
-export class LocationsComponent implements OnInit {
-  locations: Object[] = mockLocations;
+export class LocationsComponent implements OnInit, AfterContentChecked {
+  locations: Object[];
 
   newLocations: Object[] = [];
 
@@ -44,8 +17,16 @@ export class LocationsComponent implements OnInit {
     private userService: UserService,
     private locationService: LocationService
   ) {}
-  handleSaveLocations() {}
-  handleDiscardChanges() {}
+  handleSaveLocations() {
+    this.locationService
+      .saveCurrentLocations(this.newLocations)
+      .subscribe(locations => {
+        console.log("new locations", locations);
+      });
+  }
+  handleDiscardChanges() {
+    this.newLocations = []
+  }
 
   handleToggleShow() {
     const { showText } = this;
@@ -57,9 +38,12 @@ export class LocationsComponent implements OnInit {
   }
   ngOnInit() {
     const user = this.userService.currentUser;
-
+    this.locations = this.locationService.locations;
     this.locationService.getUserLocations(user).subscribe(locations => {
-      console.log('locations fetched', locations)
-    })
+      console.log("locations fetched", locations);
+    });
+  }
+  ngAfterContentChecked(){
+    console.log(this.locationService.locations === this.locations)
   }
 }

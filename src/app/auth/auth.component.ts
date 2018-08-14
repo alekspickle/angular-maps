@@ -36,6 +36,6 @@ export class AuthComponent implements OnInit, AfterViewInit {
   }
   ngAfterViewInit() {
     const { isAuthorized } = this.userData;
-    // if (isAuthorized) this.router.navigate(["/map"]);
+    if (isAuthorized) this.router.navigate(["/map"]);
   }
 }

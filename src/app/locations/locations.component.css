@@ -2,6 +2,8 @@ ul {
   list-style-type: none;
   margin: 5% auto;
   padding: 0;
+  max-height: 40vh;
+  overflow: auto;
 }
 li {
   margin: 0.5em;
@@ -30,9 +32,18 @@ div button {
   background-color: #0fb3ff;
   margin: 2%;
   cursor: pointer;
+  transition: 0.5s;
+  outline: #9f0;
+}
+div button:hover,
+div button:focus {
+  color: snow;
 }
 .edit {
   width: 2em;
   height: 2em;
   cursor: pointer;
+}
+.changable {
+  min-width: 25%;
 }

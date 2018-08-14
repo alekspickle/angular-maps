@@ -8,7 +8,7 @@ import { UserService } from "./user.service";
   styleUrls: ["./app.component.css"]
 })
 export class AppComponent implements OnInit {
-  title = `Welcome to the club ${this.username}`;
+  title = `Welcome to the club ${this.username || ''}`;
   username: string = this.userData.currentUser && this.userData.currentUser['name']
   isLogoutButtonShow: boolean = false;
 

@@ -3,3 +3,18 @@ h1 {
   text-align: center;
   color: #0fb3ff;
 }
+button {
+  margin: 0 auto;
+  display: block;
+  color: #9f0;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  padding: 1%;
+  background-color: #0fb3ff;
+  cursor: pointer;
+  transition: 0.5s;
+}
+button:hover, button:focus {
+  color: snow;
+}

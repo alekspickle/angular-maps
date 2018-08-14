@@ -1,20 +1,24 @@
-import { Component, OnInit, AfterViewInit, OnChanges } from "@angular/core";
+import { Component, OnInit, AfterViewInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { UserService } from "../user.service";
-import { AuthService } from "../auth.service";
+
+type Auth = {
+  email: string;
+  password: string;
+};
 
 @Component({
   selector: "app-auth",
   templateUrl: "./auth.component.html",
   styleUrls: ["./auth.component.css"]
 })
-export class AuthComponent implements OnInit, AfterViewInit, OnChanges {
+export class AuthComponent implements OnInit, AfterViewInit {
   users$: any;
   email: string;
   password: string;
   result: Object;
 
-  model = new AuthService("", "");
+  model: Auth = { email: "", password: "" };
   constructor(private userData: UserService, private router: Router) {}
   onSubmit() {
     const { email, password } = this.model;
@@ -33,9 +37,5 @@ export class AuthComponent implements OnInit, AfterViewInit, OnChanges {
   ngAfterViewInit() {
     const { isAuthorized } = this.userData;
     // if (isAuthorized) this.router.navigate(["/map"]);
-  }
-  ngOnChanges(){
-    const { isAuthorized } = this.userData;
-    console.log(isAuthorized);
   }
 }

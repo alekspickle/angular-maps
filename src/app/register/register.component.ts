@@ -1,9 +1,13 @@
 import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { Observable } from "rxjs";
-
 import { UserService } from "../user.service";
-import { RegisterService } from "../register.service";
+
+type Register = {
+  email: string;
+  name: string;
+  password: string;
+};
 
 @Component({
   selector: "app-register",
@@ -15,7 +19,7 @@ export class RegisterComponent implements OnInit {
   name: string;
   password: string;
 
-  model = new RegisterService("", "", "");
+  model: Register = { email: "", name: "", password: "" };
 
   constructor(private userData: UserService, private router: Router) {}
 

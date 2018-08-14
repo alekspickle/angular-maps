@@ -1,6 +1,5 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { RegisterService } from "./register.service";
 import { Headers } from "@angular/http";
 import { Router } from "@angular/router";
 import { Observable } from "rxjs";
@@ -15,7 +14,7 @@ const config = {
   providedIn: "root"
 })
 export class UserService {
-  currentUser: Object;
+ public currentUser: Object;
   isAuthorized: boolean = false;
 
   constructor(public http: HttpClient, public router: Router) {}
@@ -40,26 +39,22 @@ export class UserService {
         this._setCurrentUser(result)
       });
   }
-  register(user: RegisterService) {
+  register(user) {
     return this.http.post(`${config.url}/auth/register`, user);
   }
   logout() {
-    // remove user from local storage to log user out
+    this.currentUser = null;
+    this.isAuthorized = false;
+    this.router.navigate(['/login'])
     localStorage.removeItem("currentUser");
   }
   getUsers() {
     return this.http.get(`${config.url}/all`);
   }
-  updateUser(user: RegisterService) {
+  updateUser(user) {
     return this.http.get(`${config.url}/${user}`);
   }
-  getUserLocations(userId: number) {
-    return this.http.get(`${config.url}/location/${userId}`);
-  }
-
-  createLocation(location: any) {
-    return this.http.post(`${config.url}/location/create`, location);
-  }
+  
 
   _setIsLogged(result): Observable<Object> {
     if(result.login) this.router.navigate(['/map'])

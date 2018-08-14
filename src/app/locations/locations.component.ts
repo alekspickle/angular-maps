@@ -1,5 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { UserService } from "../user.service";
+import { LocationService } from "../location.service";
 
 const mockLocations = [
   {
@@ -36,10 +37,13 @@ const mockLocations = [
 export class LocationsComponent implements OnInit {
   locations: Object[] = mockLocations;
 
-  newLocations: Object[] = []
+  newLocations: Object[] = [];
 
   showText: string = "Hide";
-  constructor(private userService: UserService) {}
+  constructor(
+    private userService: UserService,
+    private locationService: LocationService
+  ) {}
   handleSaveLocations() {}
   handleDiscardChanges() {}
 
@@ -48,14 +52,14 @@ export class LocationsComponent implements OnInit {
     if (showText === "Hide") this.showText = "Show";
     else this.showText = "Hide";
   }
-  handleEdit(loc){
-    console.log("edit location",loc)
+  handleEdit(loc) {
+    console.log("edit location", loc);
   }
   ngOnInit() {
     const user = this.userService.currentUser;
 
-    // this.userService.getUserLocations(user).subscribe(locations => {
-    //   console.log('locations fetched', locations)
-    // })
+    this.locationService.getUserLocations(user).subscribe(locations => {
+      console.log('locations fetched', locations)
+    })
   }
 }

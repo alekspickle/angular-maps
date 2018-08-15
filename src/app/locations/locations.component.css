@@ -47,6 +47,10 @@ div button:focus {
   height: 2em;
   cursor: pointer;
 }
+.edit:hover{
+  opacity: 0.5;
+  transition: 0.3s;
+}
 .changable {
   min-width: 25%;
 }

@@ -28,6 +28,7 @@ export class AuthComponent implements OnInit, AfterViewInit {
   check() {
     this.userService.check().subscribe(result => {
       this.users$ = result['users']
+      console.log('result', result);
       console.log("data", this.users$ || "no data");
 
     })

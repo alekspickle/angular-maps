@@ -1,3 +1,6 @@
+* {
+  font-family: monospace;
+}
 form {
   width: 30%;
   display: flex;
@@ -21,14 +24,13 @@ input {
   padding: 5px;
   font-size: 0.6em;
   transition: 0.3s;
-  
 }
 input:focus {
   background-color: #fff;
   box-shadow: 0px 1px 20px 0px #0f0;
 }
-input:autofill{
-    background-color: #fff;
+input:autofill {
+  background-color: #fff;
 }
 button {
   margin: 2%;
@@ -43,9 +45,10 @@ button {
   outline: #ff0;
   transition: 0.3s;
 }
-button:hover, button:focus {
+button:hover,
+button:focus {
   color: #0fb3ffdd;
-  background-color: #fff
+  background-color: #fff;
 }
 
 .error {
@@ -54,11 +57,11 @@ button:hover, button:focus {
   text-align: center;
   min-height: 1.1em;
 }
-.header{
+.header {
   margin-left: 3%;
   text-align: center;
 }
-.button-block{
+.button-block {
   display: flex;
   justify-content: space-between;
 }

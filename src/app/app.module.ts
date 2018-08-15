@@ -10,6 +10,7 @@ import { MapsComponent } from "./maps/maps.component";
 import { AboutAuthorComponent } from "./about-author/about-author.component";
 import { RegisterComponent } from './register/register.component';
 import { LocationsComponent } from './locations/locations.component';
+import { ModalComponent } from './modal/modal.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { LocationsComponent } from './locations/locations.component';
     MapsComponent,
     AboutAuthorComponent,
     RegisterComponent,
-    LocationsComponent
+    LocationsComponent,
+    ModalComponent
   ],
   imports: [BrowserModule, FormsModule, HttpClientModule, AppRoutingModule],
   providers: [],

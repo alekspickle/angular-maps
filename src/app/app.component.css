@@ -24,3 +24,19 @@ button:hover,
 button:focus {
   color: snow;
 }
+.modal {
+  position: absolute;
+  margin: 10% auto;
+  top: 0;
+  left: 30%;
+  background-color: #8134f8;
+  text-align: center;
+  border-radius: 10px;
+}
+overlay {
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  top: 0;
+  background-color: #0004;
+}

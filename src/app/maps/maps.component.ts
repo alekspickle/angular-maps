@@ -14,7 +14,9 @@ type Pos = { lat: number; lng: number };
 export class MapsComponent implements OnInit, AfterViewInit {
   @ViewChild("gmap")
   gmapElement: any;
-  isModalShow: boolean = false;
+  infoWindow = new google.maps.InfoWindow({
+    content: `<div class='popup'>/('0'/)how do I paste something here? (/_0_)/</div>`
+  });
 
   private pos: Pos = {
     lat: 46.4598865,
@@ -26,16 +28,14 @@ export class MapsComponent implements OnInit, AfterViewInit {
     private userData: UserService,
     private locationService: LocationService
   ) {}
-  handleToggleModal() {
-    this.isModalShow = !this.isModalShow;
-  }
-
   _markerHandler(event: google.maps.MouseEvent, marker: google.maps.Marker) {
-    const infoWindow = new google.maps.InfoWindow({
-      content: `<div class='popup'>jello, bitch</div>`
-    });
-    infoWindow.setPosition(event.latLng);
-    infoWindow.open(this.map, marker);
+    this.infoWindow.close();
+    this.infoWindow.setPosition(event.latLng);
+    this.infoWindow.open(this.map, marker);
+
+    //show modal
+    this.locationService.onToggleModal();
+
   }
 
   _mapCenter(lat: number, lng: number) {

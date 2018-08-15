@@ -1,0 +1,24 @@
+form {
+  padding: 3%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+form:children {
+  margin: 2%;
+}
+select {
+  text-align: center;
+  border: none;
+  padding: 8% 8%;
+  background-color: #cf0;
+  border-radius: 7px;
+  margin: 10px;
+}
+label input {
+  padding: 3% 10%;
+  border: none;
+  border-radius: 7px;
+  box-shadow: 1px 1px 8px #000;
+}

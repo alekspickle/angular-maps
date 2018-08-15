@@ -1,3 +1,6 @@
+* {
+  font-family: monospace;
+}
 .GMap {
   width: 60%;
   height: 60vh;
@@ -10,7 +13,8 @@
 a {
   display: block;
   text-align: center;
-  margin: 3em;
+  margin: 2em;
+  margin-bottom: 1em;
   text-decoration: none;
   color: black;
   font-size: 2em;

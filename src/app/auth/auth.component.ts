@@ -19,23 +19,27 @@ export class AuthComponent implements OnInit, AfterViewInit {
   result: Object;
 
   model: Auth = { email: "", password: "" };
-  constructor(private userData: UserService, private router: Router) {}
+  constructor(private userService: UserService, private router: Router) {}
   onSubmit() {
     const { email, password } = this.model;
-    this.userData.login(email, password);
+    this.userService.login(email, password);
   }
   //TEST IF THERE ARE USERS
   check() {
-    console.log("data", this.users$ || "no data");
+    this.userService.check().subscribe(result => {
+      this.users$ = result['users']
+      console.log("data", this.users$ || "no data");
+
+    })
   }
 
   ngOnInit() {
-    this.userData.getUsers().subscribe(data => {
+    this.userService.getUsers().subscribe(data => {
       this.users$ = data;
     });
   }
   ngAfterViewInit() {
-    const { isAuthorized } = this.userData;
+    const { isAuthorized } = this.userService;
     if (isAuthorized) this.router.navigate(["/map"]);
   }
 }

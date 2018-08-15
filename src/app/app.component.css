@@ -1,7 +1,12 @@
+* {
+  font-family: monospace;
+}
 h1 {
   margin: 0 auto;
   text-align: center;
   color: #0fb3ff;
+  font-size: 3em;
+  font-weight: 500;
 }
 button {
   margin: 0 auto;
@@ -15,6 +20,7 @@ button {
   cursor: pointer;
   transition: 0.5s;
 }
-button:hover, button:focus {
+button:hover,
+button:focus {
   color: snow;
 }

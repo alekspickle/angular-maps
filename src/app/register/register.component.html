@@ -1,23 +1,29 @@
 <form #form="ngForm">
   <div class="header">Register</div>
+  <div class="error">
+    <span *ngIf="model.userExists">User with this e-mail allready exists.</span>
+  </div>
   <label>
     <input [(ngModel)]="model.email" #email="ngModel" name="email" required minlength="4" type="text"> E-mail
-    <div *ngIf="email.invalid && (email.dirty)" class="error">
-      <span *ngIf="email.errors.required">E-mail is required</span>
-    </div>
   </label>
+  <div class="error">
+    <span *ngIf="email.invalid && (email.dirty)&&email.errors.required">E-mail is required</span>
+  </div>
   <label>
     <input [(ngModel)]="model.name" #name="ngModel" name="name" required minlength="4" type="text"> Name
-    <div *ngIf="name.invalid && (name.dirty)" class="error">
-      <span *ngIf="name.errors.required">Name is required</span>
-    </div>
   </label>
+  <div class="error">
+    <span *ngIf="name.invalid && (name.dirty)&&name.errors.required">Name is required</span>
+  </div>
   <label>
     <input [(ngModel)]="model.password" #password="ngModel" name="password" required minlength="8" type="text"> Password
-    <div *ngIf="password.invalid && (password.dirty)" class="error">
-      <span *ngIf="password.errors.required">For sure password is required anyway.</span>
-    </div>
   </label>
-  <button (click)="handleRegister()" type="submit" save>Register</button>
+  <div class="error">
+    <span *ngIf="password.invalid && (password.dirty)&&password.errors.required">For sure password is required anyway.</span>
+  </div>
+  <div class="button-block">
+    <button routerLink="/login" type="button" save>Return to login</button>
+    <button (click)="handleRegister()" type="submit" save>Register</button>
+  </div>
 </form>
 <a href="#" routerLink="/author">About author</a>

@@ -46,10 +46,12 @@ button:hover {
 }
 
 .error {
+  text-align: center;
+  min-height: 1.1em;
   font-size: 0.7em;
   color: #ff0;
 }
-.header{
+.header {
   margin-left: 1%;
   text-align: center;
 }
@@ -60,4 +62,8 @@ a {
   text-decoration: none;
   color: black;
   font-size: 2em;
+}
+.button-block{
+  display: flex;
+  justify-content: space-between;
 }

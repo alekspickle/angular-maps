@@ -39,12 +39,25 @@ const config = {
   providedIn: "root"
 })
 export class LocationService {
-  locations: Object[] = mockData;
-  constructor(public http: HttpClient, public router: Router) {}
+  defLocs: Object[] = mockData;
+  newLocs: Object[] = [];
+  allLocs: Object[]= this.defLocs.concat(this.newLocs)
 
+  constructor(public http: HttpClient, public router: Router) {}
+  onAddLocation(location: any ){
+    this.newLocs.push(location)
+  }
+  onClear() {
+    this.newLocs = []
+  }
+  onDeleteLocation(location: any){
+    this.newLocs.unshift(location)
+  }
   getUserLocations(user) {
-    console.log("getting user location", user);
-    return this.http.get(`${config.url}/location/${user._id}`);
+    return this.http.get(`${config.url}/location/${user._id}`).subscribe(locations => {
+      console.log("locations fetched", locations);
+
+    });;
   }
   saveCurrentLocations(locations: Object[]){
     return this.http.post(`${config.url}/location/save`, locations)
@@ -52,4 +65,10 @@ export class LocationService {
   createLocation(location: any) {
     return this.http.post(`${config.url}/location/create`, location);
   }
+  
+  deleteLocation(location: any) {
+    return this.http.delete(`${config.url}/location/${location._id}`, location);
+  }
+
+  
 }

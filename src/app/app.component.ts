@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, AfterContentChecked  } from "@angular/core";
 import { Router } from "@angular/router";
 import { UserService } from "./user.service";
 
@@ -7,20 +7,23 @@ import { UserService } from "./user.service";
   templateUrl: "./app.component.html",
   styleUrls: ["./app.component.css"]
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit,AfterContentChecked {
+  username: string = this.userService.currentUser && this.userService.currentUser['name']
   title = `Welcome to the club ${this.username || ''}`;
-  username: string = this.userData.currentUser && this.userData.currentUser['name']
   isLogoutButtonShow: boolean = false;
 
-  constructor(private userData: UserService,  private router: Router) {
-    if (userData.isAuthorized) this.isLogoutButtonShow = true;
+  constructor(private userService: UserService,  private router: Router) {
+    if (userService.isAuthorized) this.isLogoutButtonShow = true;
   }
 
   handleLogout(){
-    this.userData.logout();
+    this.userService.logout();
   }
 
   ngOnInit(){
     // console.log(this.router.location._platformStrategy._platformLocation.location)
+  }
+  ngAfterContentChecked(){
+    this.username =this.userService.currentUser && this.userService.currentUser['name'] 
   }
 }

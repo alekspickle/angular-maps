@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from "@angular/core";
 import {} from "@types/googlemaps";
 import { UserService } from "../user.service";
+import { LocationService } from "../location.service";
 
 declare const google: any;
 type Pos = { lat: number; lng: number };
@@ -13,26 +14,28 @@ type Pos = { lat: number; lng: number };
 export class MapsComponent implements OnInit, AfterViewInit {
   @ViewChild("gmap")
   gmapElement: any;
-  mapRef: google.maps.Map;
-  bounds: google.maps.LatLngBounds;
-  latLng: google.maps.LatLng;
-  user$: Object;
-  userLocations$: Object;
+  isModalShow: boolean = false;
+
   private pos: Pos = {
     lat: 46.4598865,
-    lng: 30.5717048
+    lng: 30.7717048
   };
   private map: any;
 
-  constructor(private userData: UserService) {}
+  constructor(
+    private userData: UserService,
+    private locationService: LocationService
+  ) {}
+  handleToggleModal() {
+    this.isModalShow = !this.isModalShow;
+  }
 
-  
-  _markerHandler(marker: google.maps.Marker) {
+  _markerHandler(event: google.maps.MouseEvent, marker: google.maps.Marker) {
     const infoWindow = new google.maps.InfoWindow({
-      content: "popup, bitch"
+      content: `<div class='popup'>jello, bitch</div>`
     });
-    infoWindow.open(this.map, marker)
-    console.log("marker", marker);
+    infoWindow.setPosition(event.latLng);
+    infoWindow.open(this.map, marker);
   }
 
   _mapCenter(lat: number, lng: number) {
@@ -40,39 +43,48 @@ export class MapsComponent implements OnInit, AfterViewInit {
   }
 
   _placeMarker(location: Pos) {
-   
     const marker = new google.maps.Marker({
       position: location,
       map: this.map,
       draggable: true
     });
-    marker.addListener("click", this._markerHandler);
+
+    //popup info window
+    marker.addListener("click", (event: google.maps.MouseEvent) =>
+      this._markerHandler(event, marker)
+    );
 
     return marker;
   }
   ngOnInit() {
-    this.userData.getUsers().subscribe(data => (this.user$ = data));
-    
+    //init map
     this.map = new google.maps.Map(this.gmapElement.nativeElement, {
       zoom: 11,
-      center: this._mapCenter(this.pos.lat, this.pos.lng),
-      disableDefaultUI: true
+      zoomControl: true,
+      streetViewControl: true,
+      center: this._mapCenter(this.pos.lat, this.pos.lng)
     });
+
+    //add marker on click
     this.map.addListener("click", (event: google.maps.MouseEvent) => {
+      console.log(event);
       this._placeMarker({ lat: event.latLng.lat(), lng: event.latLng.lng() });
     });
 
+    //add current location marker
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(pos => {
-        console.log('your position',pos)
         this.pos.lat = pos.coords.latitude;
         this.pos.lng = pos.coords.longitude;
       });
       this._placeMarker(this.pos);
     }
   }
-  
+
   ngAfterViewInit() {
-    
+    //add all user markers
+    this.locationService.allLocs.forEach(el =>
+      this._placeMarker({ lat: el["lat"], lng: el["lng"] })
+    );
   }
 }

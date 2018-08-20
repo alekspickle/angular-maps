@@ -5,31 +5,35 @@ import { Observable } from "rxjs";
 
 const mockData = [
   {
+    _id: "kjgfsjetfgjytseyjhtf32tf1",
     name: "moldavanka",
-    type: "restaurant",
+    type: "park",
     lat: 46.3998865,
     lng: 30.6717048,
     user_id: "5b72d640e254cb4ab76c0c26"
   },
   {
-    name: "anywhere",
-    type: "park",
+    _id: "kjgfsjetfgjytseyjhtf32tf2",
+    name: "center",
+    type: "restaurant",
     lat: 46.4619865,
     lng: 30.7518048,
     user_id: "5b72d640e254cb4ab76c0c26"
   },
   {
-    name: "elsewhere",
+    _id: "kjgfsjetfgjytseyjhtf32tf3",
+    name: "bus station",
     type: "beach",
     lat: 46.460865,
     lng: 30.6719048,
     user_id: "5b72d640e254cb4ab76c0c26"
   },
   {
-    name: "softwhere",
-    type: "restaurant",
-    lat: 46.390165,
-    lng: 30.7720048,
+    _id: "kjgfsjetfgjytseyjhtf32tf4",
+    name: "langeron",
+    type: "beach",
+    lat: 46.4100529,
+    lng: 30.7362992,
     user_id: "5b72d640e254cb4ab76c0c26"
   }
 ];
@@ -55,17 +59,25 @@ export class LocationService {
   onToggleModal() {
     this.isModalShow = !this.isModalShow;
   }
-  onChangeCurrentMarker(latLng: Pos){
-    this.currentMarker = latLng
+  onChangeCurrentMarker(latLng: Pos) {
+    this.currentMarker = latLng;
   }
   onAddLocation(location: any) {
     this.newLocs.push(location);
+    this.allLocs.push(location);
   }
   onClear() {
     this.newLocs = [];
   }
   onDeleteLocation(location: any) {
-    this.newLocs.unshift(location);
+    console.log(
+      "location",
+      location,
+      this.allLocs.find(el => (location._id = el["_id"]))
+    );
+    this.allLocs.filter(el => location._id !== el["_id"]);
+    this.newLocs.filter(el => location._id !== el["_id"]);
+    console.log("all", this.allLocs, "new", this.newLocs);
   }
   getUserLocations(user) {
     return this.http

@@ -32,7 +32,7 @@ export class MapsComponent implements OnInit, AfterViewInit {
     this.infoWindow.close();
     this.infoWindow.setPosition(event.latLng);
     this.infoWindow.open(this.map, marker);
-
+    console.log(event.latLng.lat(), event.latLng.lng());
     //show modal
     this.locationService.onToggleModal();
 

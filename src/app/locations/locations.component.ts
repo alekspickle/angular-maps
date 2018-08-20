@@ -8,7 +8,7 @@ import { LocationService } from "../location.service";
   styleUrls: ["./locations.component.css"]
 })
 export class LocationsComponent implements OnInit, AfterContentChecked {
-  allLocs: Object[] = []
+  allLocs: Object[] = [];
   showText: string = "Hide";
   constructor(
     private userService: UserService,
@@ -23,7 +23,7 @@ export class LocationsComponent implements OnInit, AfterContentChecked {
       });
   }
   handleDiscardChanges() {
-    this.locationService.onClear()
+    this.locationService.onClear();
   }
 
   handleToggleShow() {
@@ -33,17 +33,17 @@ export class LocationsComponent implements OnInit, AfterContentChecked {
   }
 
   handleDelete(loc) {
-    console.log("delete location", loc);
+    this.locationService.onDeleteLocation(loc);
   }
 
   ngOnInit() {
     const user = this.userService.currentUser;
     this.allLocs = this.locationService.allLocs;
-    this.locationService.getUserLocations(user)
-    console.log('location list',this.allLocs)
+    this.locationService.getUserLocations(user);
+    console.log("location list", this.allLocs);
   }
 
-  ngAfterContentChecked(){
+  ngAfterContentChecked() {
     this.allLocs = this.locationService.allLocs;
   }
 }

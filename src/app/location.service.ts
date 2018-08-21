@@ -5,7 +5,7 @@ import { Observable } from "rxjs";
 
 const mockData = [
   {
-    _id: "kjgfsjetfgjytseyjhtf32tf1",
+    _id: "grjvndhto493c61581c9fe11",
     name: "moldavanka",
     type: "park",
     lat: 46.3998865,
@@ -13,7 +13,7 @@ const mockData = [
     user_id: "5b72d640e254cb4ab76c0c26"
   },
   {
-    _id: "kjgfsjetfgjytseyjhtf32tf2",
+    _id: "grjvndhto493c61581c9fe12",
     name: "center",
     type: "restaurant",
     lat: 46.4619865,
@@ -21,7 +21,7 @@ const mockData = [
     user_id: "5b72d640e254cb4ab76c0c26"
   },
   {
-    _id: "kjgfsjetfgjytseyjhtf32tf3",
+    _id: "grjvndhto493c61581c9fe13",
     name: "bus station",
     type: "beach",
     lat: 46.460865,
@@ -29,7 +29,7 @@ const mockData = [
     user_id: "5b72d640e254cb4ab76c0c26"
   },
   {
-    _id: "kjgfsjetfgjytseyjhtf32tf4",
+    _id: "grjvndhto493c61581c9fe14",
     name: "langeron",
     type: "beach",
     lat: 46.4100529,
@@ -54,10 +54,15 @@ export class LocationService {
   allLocs: Object[] = this.defLocs.concat(this.newLocs);
   currentMarker: Pos;
   isModalShow: boolean = false;
+  isMarkersVisible: boolean = true;
 
   constructor(public http: HttpClient, public router: Router) {}
   onToggleModal() {
     this.isModalShow = !this.isModalShow;
+  }
+
+  onToggleMarkers() {
+    this.isMarkersVisible = !this.isMarkersVisible;
   }
   onChangeCurrentMarker(latLng: Pos) {
     this.currentMarker = latLng;
@@ -79,11 +84,15 @@ export class LocationService {
     this.newLocs.filter(el => location._id !== el["_id"]);
     console.log("all", this.allLocs, "new", this.newLocs);
   }
+
   getUserLocations(user) {
     return this.http
-      .get(`${config.url}/location/${user._id}`)
+      .get<Object[]>(`${config.url}/location/${user._id}`)
       .subscribe(locations => {
-        console.log("locations fetched", locations);
+        const locs: Array<object> = locations;
+        console.log("locations fetched", locs);
+        this.defLocs = locs;
+        this.allLocs = locs.concat(this.newLocs);
       });
   }
   saveCurrentLocations(locations: Object[]) {

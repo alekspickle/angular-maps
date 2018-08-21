@@ -28,6 +28,7 @@ export class MapsComponent implements OnInit, AfterViewInit {
     private userData: UserService,
     private locationService: LocationService
   ) {}
+
   _markerHandler(event: google.maps.MouseEvent, marker: google.maps.Marker) {
     this.infoWindow.close();
     this.infoWindow.setPosition(event.latLng);
@@ -35,7 +36,6 @@ export class MapsComponent implements OnInit, AfterViewInit {
     console.log(event.latLng.lat(), event.latLng.lng());
     //show modal
     this.locationService.onToggleModal();
-
   }
 
   _mapCenter(lat: number, lng: number) {

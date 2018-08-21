@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterContentChecked } from "@angular/core";
+import { Component, OnInit, OnChanges } from "@angular/core";
 import { UserService } from "../user.service";
 import { LocationService } from "../location.service";
 
@@ -7,7 +7,7 @@ import { LocationService } from "../location.service";
   templateUrl: "./locations.component.html",
   styleUrls: ["./locations.component.css"]
 })
-export class LocationsComponent implements OnInit, AfterContentChecked {
+export class LocationsComponent implements OnInit, OnChanges {
   allLocs: Object[] = [];
   showText: string = "Hide";
   constructor(
@@ -22,6 +22,7 @@ export class LocationsComponent implements OnInit, AfterContentChecked {
         console.log("success", added);
       });
   }
+
   handleDiscardChanges() {
     this.locationService.onClear();
   }
@@ -30,6 +31,8 @@ export class LocationsComponent implements OnInit, AfterContentChecked {
     const { showText } = this;
     if (showText === "Hide") this.showText = "Show";
     else this.showText = "Hide";
+    this.locationService.onToggleMarkers()
+    console.log('is markers showed', this.locationService.isMarkersVisible);
   }
 
   handleDelete(loc) {
@@ -38,12 +41,12 @@ export class LocationsComponent implements OnInit, AfterContentChecked {
 
   ngOnInit() {
     const user = this.userService.currentUser;
-    this.allLocs = this.locationService.allLocs;
     this.locationService.getUserLocations(user);
-    console.log("location list", this.allLocs);
-  }
-
-  ngAfterContentChecked() {
     this.allLocs = this.locationService.allLocs;
+  }
+  
+  ngOnChanges() {
+    this.allLocs = this.locationService.allLocs;
+    console.log("location list", this.allLocs);
   }
 }

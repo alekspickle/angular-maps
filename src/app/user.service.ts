@@ -34,7 +34,6 @@ export class UserService {
         password: password
       })
       .subscribe(result => {
-        console.log("login result", result);
         this._setIsLogged(result);
         this._setCurrentUser(result);
       });

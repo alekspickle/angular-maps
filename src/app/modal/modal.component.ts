@@ -39,7 +39,8 @@ export class ModalComponent implements OnInit {
   ) {}
   handleAddLocation(e) {
     console.log("event", e);
-    // this.locationService.onAddLocation(location)
+    // this.locationService.onAddLocation(this.locationService.currentMarker)
   }
+
   ngOnInit() {}
 }

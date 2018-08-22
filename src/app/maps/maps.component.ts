@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from "@angular/core";
+import { AfterViewChecked, Component, OnInit, ViewChild } from "@angular/core";
 import {} from "@types/googlemaps";
 import { UserService } from "../user.service";
 import { LocationService } from "../location.service";
@@ -11,7 +11,7 @@ type Pos = { lat: number; lng: number };
   templateUrl: "./maps.component.html",
   styleUrls: ["./maps.component.css"]
 })
-export class MapsComponent implements OnInit, AfterViewInit {
+export class MapsComponent implements OnInit, AfterViewChecked {
   @ViewChild("gmap")
   gmapElement: any;
   infoWindow = new google.maps.InfoWindow({
@@ -23,9 +23,9 @@ export class MapsComponent implements OnInit, AfterViewInit {
     lng: 30.7717048
   };
   private map: any;
-
+  markers : google.maps.Marker[] = []
   constructor(
-    private userData: UserService,
+    private userService: UserService,
     private locationService: LocationService
   ) {}
 
@@ -36,6 +36,10 @@ export class MapsComponent implements OnInit, AfterViewInit {
     console.log(event.latLng.lat(), event.latLng.lng());
     //show modal
     this.locationService.onToggleModal();
+    this.locationService.onChangeCurrentMarker({
+      lat: event.latLng.lat(),
+      lng: event.latLng.lng()
+    });
   }
 
   _mapCenter(lat: number, lng: number) {
@@ -48,12 +52,19 @@ export class MapsComponent implements OnInit, AfterViewInit {
       map: this.map,
       draggable: true
     });
-
+    console.log('currentUser',this.userService.currentUser);
     //popup info window
+    this.markers.push(marker)
     marker.addListener("click", (event: google.maps.MouseEvent) =>
       this._markerHandler(event, marker)
     );
-
+    this.locationService.onAddLocation({
+      name: "New Location",
+      type: "park",
+      lat: location.lat,
+      lng: location.lng,
+      user_id: this.userService.currentUser["_id"] || "common"
+    });
     return marker;
   }
   ngOnInit() {
@@ -81,10 +92,11 @@ export class MapsComponent implements OnInit, AfterViewInit {
     }
   }
 
-  ngAfterViewInit() {
+  ngAfterViewChecked() {
     //add all user markers
-    this.locationService.allLocs.forEach(el =>
-      this._placeMarker({ lat: el["lat"], lng: el["lng"] })
-    );
+    this.locationService
+      .allLocs()
+      .forEach(el => this._placeMarker({ lat: el["lat"], lng: el["lng"] }));
+    console.log("maps update");
   }
 }

@@ -3,6 +3,14 @@ import { HttpClient } from "@angular/common/http";
 import { Router } from "@angular/router";
 import { Observable } from "rxjs";
 
+type Loc = {
+  name: string;
+  type: string;
+  lat: number;
+  lng: number;
+  user_id: string;
+};
+
 const mockData = [
   {
     _id: "grjvndhto493c61581c9fe11",
@@ -49,38 +57,38 @@ type Pos = { lat: number; lng: number };
   providedIn: "root"
 })
 export class LocationService {
-  defLocs: Object[] = mockData;
+  defLocs: Object[] = [];
+  // defLocs: Object[] = mockData;
   newLocs: Object[] = [];
-  allLocs: Object[] = this.defLocs.concat(this.newLocs);
+  allLocs = () => this.defLocs.concat(this.newLocs);
   currentMarker: Pos;
-  isModalShow: boolean = false;
   isMarkersVisible: boolean = true;
+  public isModalShow: boolean = false;
 
   constructor(public http: HttpClient, public router: Router) {}
   onToggleModal() {
     this.isModalShow = !this.isModalShow;
+    console.log("toggle modal");
   }
 
   onToggleMarkers() {
     this.isMarkersVisible = !this.isMarkersVisible;
   }
+  
   onChangeCurrentMarker(latLng: Pos) {
     this.currentMarker = latLng;
   }
-  onAddLocation(location: any) {
+
+  onAddLocation(location: Loc) {
     this.newLocs.push(location);
-    this.allLocs.push(location);
   }
+
   onClear() {
     this.newLocs = [];
   }
+
   onDeleteLocation(location: any) {
-    console.log(
-      "location",
-      location,
-      this.allLocs.find(el => (location._id = el["_id"]))
-    );
-    this.allLocs.filter(el => location._id !== el["_id"]);
+    console.log("location", location);
     this.newLocs.filter(el => location._id !== el["_id"]);
     console.log("all", this.allLocs, "new", this.newLocs);
   }
@@ -88,11 +96,10 @@ export class LocationService {
   getUserLocations(user) {
     return this.http
       .get<Object[]>(`${config.url}/location/${user._id}`)
-      .subscribe(locations => {
-        const locs: Array<object> = locations;
-        console.log("locations fetched", locs);
+      .subscribe(result => {
+        const locs: Array<object> = result["locations"];
+        console.log("locations fetched", locs, typeof locs);
         this.defLocs = locs;
-        this.allLocs = locs.concat(this.newLocs);
       });
   }
   saveCurrentLocations(locations: Object[]) {

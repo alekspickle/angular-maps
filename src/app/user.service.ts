@@ -4,6 +4,7 @@ import { Headers } from "@angular/http";
 import { Router } from "@angular/router";
 import { Observable } from "rxjs";
 import { map, catchError } from "rxjs/operators";
+import { LocationService } from "./location.service";
 
 const config = {
   url: "http://localhost:3001"
@@ -17,7 +18,11 @@ export class UserService {
   public currentUser: Object;
   isAuthorized: boolean = false;
 
-  constructor(public http: HttpClient, public router: Router) {}
+  constructor(
+    public http: HttpClient,
+    public router: Router,
+    public locationService: LocationService
+  ) {}
 
   private getHeaders() {
     let headers = new Headers();
@@ -46,7 +51,9 @@ export class UserService {
     this.isAuthorized = false;
     this.router.navigate(["/login"]);
     localStorage.removeItem("currentUser");
+    this.locationService.isModalShow = false;
   }
+  
   getUsers() {
     return this.http.get(`${config.url}/all`);
   }

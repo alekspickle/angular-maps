@@ -1,7 +1,8 @@
-import { AfterViewChecked, Component, OnInit, ViewChild } from "@angular/core";
+import { AfterViewInit, Component, OnInit, ViewChild } from "@angular/core";
 import {} from "@types/googlemaps";
 import { UserService } from "../user.service";
 import { LocationService } from "../location.service";
+import { types } from ".././constants/locations";
 
 declare const google: any;
 type Pos = { lat: number; lng: number };
@@ -11,19 +12,18 @@ type Pos = { lat: number; lng: number };
   templateUrl: "./maps.component.html",
   styleUrls: ["./maps.component.css"]
 })
-export class MapsComponent implements OnInit, AfterViewChecked {
+export class MapsComponent implements OnInit, AfterViewInit {
   @ViewChild("gmap")
   gmapElement: any;
   infoWindow = new google.maps.InfoWindow({
     content: `<div class='popup'>/('0'/)how do I paste something here? (/_0_)/</div>`
   });
-
+  types: Object[] = types;
   private pos: Pos = {
     lat: 46.4598865,
     lng: 30.7717048
   };
   private map: any;
-  markers : google.maps.Marker[] = []
   constructor(
     private userService: UserService,
     private locationService: LocationService
@@ -52,9 +52,10 @@ export class MapsComponent implements OnInit, AfterViewChecked {
       map: this.map,
       draggable: true
     });
-    console.log('currentUser',this.userService.currentUser);
+    console.log("currentUser", this.userService.currentUser);
     //popup info window
-    this.markers.push(marker)
+    console.log(marker);
+    this.locationService.markers.push(marker);
     marker.addListener("click", (event: google.maps.MouseEvent) =>
       this._markerHandler(event, marker)
     );
@@ -67,6 +68,29 @@ export class MapsComponent implements OnInit, AfterViewChecked {
     });
     return marker;
   }
+  
+  handleTogglePlaces(place) {
+    const lat = this.locationService.currentMarker.lat;
+    const lng = this.locationService.currentMarker.lng;
+    const request = {
+      location: new google.maps.LatLng(lat, lng),
+      radius: place.radius,
+      type: [place.type]
+    };
+
+    const service = new google.maps.places.PlacesService(this.map);
+    service.nearbySearch(request, this.callback);
+  }
+
+  callback(results, status) {
+    if (status == google.maps.places.PlacesServiceStatus.OK) {
+      for (let i = 0; i < results.length; i++) {
+        const place = results[i];
+        this._placeMarker(place);
+      }
+    }
+  }
+  
   ngOnInit() {
     //init map
     this.map = new google.maps.Map(this.gmapElement.nativeElement, {
@@ -88,15 +112,22 @@ export class MapsComponent implements OnInit, AfterViewChecked {
         this.pos.lat = pos.coords.latitude;
         this.pos.lng = pos.coords.longitude;
       });
-      this._placeMarker(this.pos);
+      const current = this.locationService.markers.find(
+        el => el["position"]
+        // el["position"]["lat"]() === this.pos.lat &&
+        // el["position"]["lng"]() === this.pos.lng
+      );
+      console.log("your position", current);
+      // if (!current) this._placeMarker(this.pos);
+      return;
     }
   }
 
-  ngAfterViewChecked() {
+  ngAfterViewInit() {
     //add all user markers
-    this.locationService
-      .allLocs()
-      .forEach(el => this._placeMarker({ lat: el["lat"], lng: el["lng"] }));
+    this.locationService.allLocs.forEach(el =>
+      this._placeMarker({ lat: el["lat"], lng: el["lng"] })
+    );
     console.log("maps update");
   }
 }

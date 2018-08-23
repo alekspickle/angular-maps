@@ -17,7 +17,7 @@ export class LocationsComponent implements OnInit, AfterContentChecked {
 
   handleSaveLocations() {
     this.locationService
-      .saveCurrentLocations(this.locationService.newLocs)
+      .saveCurrentLocations(this.locationService.allLocs)
       .subscribe(added => {
         console.log("success", added);
       });
@@ -31,8 +31,7 @@ export class LocationsComponent implements OnInit, AfterContentChecked {
     const { showText } = this;
     if (showText === "Hide") this.showText = "Show";
     else this.showText = "Hide";
-    const map = document.getElementsByClassName('GMap')
-    this.locationService.onToggleMarkers(map)
+    this.locationService.onToggleMarkers()
     // console.log('is markers showed', this.locationService.isMarkersVisible);
   }
   
@@ -41,8 +40,6 @@ export class LocationsComponent implements OnInit, AfterContentChecked {
   }
 
   ngOnInit() {
-    const user = this.userService.currentUser;
-    this.locationService.getUserLocations(user);
     this.allLocs = this.locationService.allLocs;
   }
   

@@ -18,29 +18,36 @@ type Pos = { lat: number; lng: number };
 })
 export class LocationService {
   defLocs: Object[] = [];
-  // defLocs: Object[] = mockData;
   newLocs: Object[] = [];
   allLocs: Object[] = this.defLocs.concat(this.newLocs);
   currentMarker: Pos;
   markers: google.maps.Marker[] = [];
-  isMarkersVisible: boolean = true;
+  public isMarkersVisible: boolean = true;
   public isModalShow: boolean = false;
 
   constructor(public http: HttpClient, public router: Router) {}
   onToggleModal() {
     this.isModalShow = !this.isModalShow;
-    console.log("toggle modal");
+    console.log(
+      "toggle modal",
+      this.isModalShow,
+      "is markers visible",
+      this.isMarkersVisible,
+      "markers",
+      this.markers
+    );
   }
-  onSetMapOnAll(map) {
-    for (var i = 0; i < this.markers.length; i++) {
-      this.markers[i].setMap(map);
-    }
-  }
-  onToggleMarkers(map) {
-    if(this.isMarkersVisible) this.onSetMapOnAll(null)
-    else this.onSetMapOnAll(map)
-    this.isMarkersVisible = !this.isMarkersVisible;
 
+  onToggleMarkers() {
+    this.isMarkersVisible = !this.isMarkersVisible;
+    console.log(
+      "toggle modal",
+      this.isModalShow,
+      "is markers visible",
+      this.isMarkersVisible,
+      "markers",
+      this.markers
+    );
   }
 
   onChangeCurrentMarker(latLng: Pos) {
@@ -55,6 +62,8 @@ export class LocationService {
   onClear() {
     this.newLocs = [];
     this.allLocs = this.defLocs;
+    this.isModalShow = false;
+    this.markers = []
   }
 
   onDeleteLocation(location: any) {
@@ -67,12 +76,7 @@ export class LocationService {
   getUserLocations(user) {
     return this.http
       .get<Object[]>(`${config.url}/location/${user._id}`)
-      .subscribe(result => {
-        const locs: Array<object> = result["locations"];
-        console.log("locations fetched", locs, typeof locs);
-        this.defLocs = locs;
-        this.allLocs = this.defLocs.concat(this.newLocs);
-      });
+      
   }
   saveCurrentLocations(locations: Object[]) {
     return this.http.post(`${config.url}/location/save`, { locations });

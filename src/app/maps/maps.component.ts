@@ -52,9 +52,8 @@ export class MapsComponent implements OnInit, AfterViewInit {
       map: this.map,
       draggable: true
     });
-    console.log("currentUser", this.userService.currentUser);
-    //popup info window
-    console.log(marker);
+    // console.log("currentUser", this.userService.currentUser);
+    console.log("place marker", marker);
     this.locationService.markers.push(marker);
     marker.addListener("click", (event: google.maps.MouseEvent) =>
       this._markerHandler(event, marker)
@@ -68,7 +67,13 @@ export class MapsComponent implements OnInit, AfterViewInit {
     });
     return marker;
   }
-  
+
+  handleSetMapOnAll(map) {
+    const array = this.locationService.markers;
+    for (var i = 0; i < array.length; i++) {
+      array[i].setMap(map);
+    }
+  }
   handleTogglePlaces(place) {
     const lat = this.locationService.currentMarker.lat;
     const lng = this.locationService.currentMarker.lng;
@@ -90,8 +95,21 @@ export class MapsComponent implements OnInit, AfterViewInit {
       }
     }
   }
-  
+
   ngOnInit() {
+    const user = this.userService.currentUser;
+    this.locationService.getUserLocations(user).subscribe(result => {
+      const locs: Array<object> = result["locations"];
+      console.log("locations fetched", locs, typeof locs);
+      this.locationService.defLocs = locs;
+      this.locationService.markers = locs.map(el =>
+        this._placeMarker({ lat: el["lat"], lng: el["lng"] })
+      );
+      this.locationService.allLocs = this.locationService.defLocs.concat(
+        this.locationService.newLocs
+      );
+    });
+    
     //init map
     this.map = new google.maps.Map(this.gmapElement.nativeElement, {
       zoom: 11,
@@ -118,7 +136,7 @@ export class MapsComponent implements OnInit, AfterViewInit {
         // el["position"]["lng"]() === this.pos.lng
       );
       console.log("your position", current);
-      // if (!current) this._placeMarker(this.pos);
+      if (!current) this._placeMarker(this.pos);
       return;
     }
   }
@@ -129,5 +147,8 @@ export class MapsComponent implements OnInit, AfterViewInit {
       this._placeMarker({ lat: el["lat"], lng: el["lng"] })
     );
     console.log("maps update");
+    //toggle markers
+    if (this.locationService.isMarkersVisible) this.handleSetMapOnAll(null);
+    else this.handleSetMapOnAll(this.map);
   }
 }

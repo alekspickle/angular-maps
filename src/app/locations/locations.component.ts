@@ -1,4 +1,10 @@
-import { Component, OnInit, OnChanges, AfterContentChecked } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  OnChanges,
+  AfterContentChecked,
+  Input
+} from "@angular/core";
 import { UserService } from "../user.service";
 import { LocationService } from "../location.service";
 
@@ -8,6 +14,16 @@ import { LocationService } from "../location.service";
   styleUrls: ["./locations.component.css"]
 })
 export class LocationsComponent implements OnInit, AfterContentChecked {
+  @Input()
+  isModalShow: boolean;
+  @Input()
+  onClear;
+  @Input()
+  onDeleteLocation;
+  @Input()
+  onToggleMarkers;
+  @Input()
+  parentLocs;
   allLocs: Object[] = [];
   showText: string = "Hide";
   constructor(
@@ -16,35 +32,33 @@ export class LocationsComponent implements OnInit, AfterContentChecked {
   ) {}
 
   handleSaveLocations() {
-    this.locationService
-      .saveCurrentLocations(this.locationService.allLocs)
-      .subscribe(added => {
-        console.log("success", added);
-      });
+    this.locationService.saveCurrentLocations(this.allLocs).subscribe(added => {
+      console.log("success", added);
+    });
   }
 
   handleDiscardChanges() {
-    this.locationService.onClear();
+    this.onClear();
   }
 
   handleToggleShow() {
     const { showText } = this;
     if (showText === "Hide") this.showText = "Show";
     else this.showText = "Hide";
-    this.locationService.onToggleMarkers()
+    this.onToggleMarkers();
     // console.log('is markers showed', this.locationService.isMarkersVisible);
   }
-  
+
   handleDelete(loc) {
-    this.locationService.onDeleteLocation(loc);
+    this.onDeleteLocation(loc);
   }
 
   ngOnInit() {
-    this.allLocs = this.locationService.allLocs;
+    this.allLocs = this.parentLocs;
   }
-  
-  ngAfterContentChecked() { 
-    this.allLocs = this.locationService.allLocs;
+
+  ngAfterContentChecked() {
+    this.allLocs = this.parentLocs;
     // console.log("location list", this.allLocs);
   }
 }

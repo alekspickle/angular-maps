@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, Input } from "@angular/core";
 import { UserService } from "../user.service";
 import { LocationService } from "../location.service";
 
@@ -16,6 +16,7 @@ type Loc = {
   styleUrls: ["./modal.component.css"]
 })
 export class ModalComponent implements OnInit {
+  @Input() handleToggleModal
   title = `Add new Location`;
   types = [
     { name: "park" },
@@ -39,6 +40,7 @@ export class ModalComponent implements OnInit {
   ) {}
   handleAddLocation(e) {
     console.log("event", e);
+    this.handleToggleModal()
     // this.locationService.onAddLocation(this.locationService.currentMarker)
   }
 

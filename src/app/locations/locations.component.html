@@ -2,7 +2,7 @@
   <p>Your locations</p>
   <ul>
     <li *ngFor="let location of allLocs">
-      <p>{{location.name}}</p>
+      <p>{{location.name}}, {{location.type}}</p>
       <img (click)="handleDelete(location)" class="edit" alt="edit icon" src="../../assets/delete.png" />
     </li>
   </ul>

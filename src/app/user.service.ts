@@ -3,13 +3,8 @@ import { HttpClient } from "@angular/common/http";
 import { Headers } from "@angular/http";
 import { Router } from "@angular/router";
 import { Observable } from "rxjs";
-import { map, catchError } from "rxjs/operators";
 import { LocationService } from "./location.service";
-
-const config = {
-  url: "http://localhost:3001"
-  // url: "https://maps-test.herokuapp.com:3001"
-};
+import { config } from './constants/locations'
 
 @Injectable({
   providedIn: "root"
@@ -51,7 +46,6 @@ export class UserService {
     this.isAuthorized = false;
     this.router.navigate(["/login"]);
     localStorage.removeItem("currentUser");
-    this.locationService.isModalShow = false;
   }
   
   getUsers() {

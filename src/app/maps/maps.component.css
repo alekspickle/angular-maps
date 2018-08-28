@@ -4,7 +4,6 @@
 .GMap {
   width: 60%;
   height: 60vh;
-  background-color: #8134f8;
 }
 .map-section {
   display: flex;
@@ -24,8 +23,8 @@ a {
   margin: 10% auto;
   top: 0;
   left: 30%;
-  background-color: #8134f8;
+  background-color: #0fb3ff;
   text-align: center;
   border-radius: 10px;
+  font-family: monospace;
 }
-

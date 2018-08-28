@@ -23,13 +23,13 @@ export class MapsComponent implements OnInit, AfterViewInit {
   @ViewChild("gmap")
   gmapElement: any;
   types: Object[] = types;
-  isModalShow: boolean = false;
+  public isModalShow: boolean = false;
   defLocs: Object[] = [];
-  newLocs: Object[] = [];
-  allLocs: Object[] = this.defLocs.concat(this.newLocs);
-  currentMarker: Pos;
-  markers: google.maps.Marker[] = [];
-  isMarkersVisible: boolean = true;
+  public newLocs: Object[] = [];
+  public allLocs: Object[] = this.defLocs.concat(this.newLocs);
+  public currentMarker: Pos;
+  public markers: google.maps.Marker[] = [];
+  public isMarkersVisible: boolean = true;
   infoWindow = new google.maps.InfoWindow({
     content: `<div>/('0'/)\\|/ (/_0_)/</div>`
   });
@@ -85,16 +85,24 @@ export class MapsComponent implements OnInit, AfterViewInit {
   }
   handleChangeCurrentMarker(latLng: Pos) {
     this.currentMarker = latLng;
-    console.log("change current marker",latLng);
+    console.log("change current marker", latLng);
   }
 
   handleAddLocation(location: Loc) {
+    console.log(location, this.allLocs);
+
     this.newLocs.push(location);
     this.allLocs = this.defLocs.concat(this.newLocs);
   }
-
-  
-
+  handleEditLocation(location: Loc) {
+    console.log(location, this.allLocs);
+    let marker = this.allLocs.find(
+      el =>
+        el["lat"] === this.currentMarker.lat &&
+        el["lng"] === this.currentMarker.lng
+    );
+    marker = { ...location };
+  }
   handleDeleteLocation(location: any) {
     console.log("location", location);
     this.newLocs.filter(el => location._id !== el["_id"]);
@@ -162,15 +170,13 @@ export class MapsComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     const user = this.userService.currentUser;
     this.locationService.getUserLocations(user).subscribe(result => {
-      const locs: Array<object> = result["locations"];
+      const locs: object[] = result["locations"];
       console.log("locations fetched", locs);
       this.defLocs = locs;
       this.markers = locs.map(el =>
         this._placeMarker({ lat: el["lat"], lng: el["lng"] })
       );
-      this.allLocs = this.defLocs.concat(
-        this.newLocs
-      );
+      this.allLocs = this.defLocs.concat(this.newLocs);
     });
 
     //init map
@@ -202,7 +208,7 @@ export class MapsComponent implements OnInit, AfterViewInit {
         // el["position"]["lng"]() === this.pos.lng
       );
       console.log("your position", current);
-      if (!current) this._placeMarker(this.pos);
+      if (!current) this._placeMarker(this.pos, true);
       return;
     }
   }

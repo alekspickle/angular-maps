@@ -85,6 +85,7 @@ export class MapsComponent implements OnInit, AfterViewInit {
   }
   handleChangeCurrentMarker(latLng: Pos) {
     this.currentMarker = latLng;
+    console.log("change current marker",latLng);
   }
 
   handleAddLocation(location: Loc) {

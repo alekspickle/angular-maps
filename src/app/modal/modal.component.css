@@ -22,3 +22,18 @@ label input {
   border-radius: 7px;
   box-shadow: 1px 1px 8px #000;
 }
+button{
+  color: #9f0;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  padding: 3%;
+  background-color: #0fb3ff;
+  cursor: pointer;
+  transition: 0.5s;
+  outline: #9f0
+}
+button:hover,
+button:focus {
+  color: snow;
+}

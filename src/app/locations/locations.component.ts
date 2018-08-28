@@ -45,8 +45,8 @@ export class LocationsComponent implements OnInit, AfterContentChecked {
     const { showText } = this;
     if (showText === "Hide") this.showText = "Show";
     else this.showText = "Hide";
+
     this.onToggleMarkers();
-    // console.log('is markers showed', this.locationService.isMarkersVisible);
   }
 
   handleDelete(loc) {
@@ -59,6 +59,5 @@ export class LocationsComponent implements OnInit, AfterContentChecked {
 
   ngAfterContentChecked() {
     this.allLocs = this.parentLocs;
-    // console.log("location list", this.allLocs);
   }
 }

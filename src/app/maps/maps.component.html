@@ -7,6 +7,6 @@
     </ul>
 </div>
 <div *ngIf="isModalShow" class="modal">
-    <app-modal [handleToggleModal]="handleToggleModal"></app-modal>
+    <app-modal [handleAdd]="handleAddLocation" [onToggleModal]="handleToggleModal"></app-modal>
 </div>
 <a href="#" routerLink="/author">About author</a>

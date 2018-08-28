@@ -16,7 +16,8 @@ type Loc = {
   styleUrls: ["./modal.component.css"]
 })
 export class ModalComponent implements OnInit {
-  @Input() handleToggleModal
+  @Input() onToggleModal
+  @Input() handleAdd
   title = `Add new Location`;
   types = [
     { name: "park" },
@@ -40,8 +41,9 @@ export class ModalComponent implements OnInit {
   ) {}
   handleAddLocation(e) {
     console.log("event", e);
-    this.handleToggleModal()
-    // this.locationService.onAddLocation(this.locationService.currentMarker)
+
+    this.handleAdd(this.model)
+    this.onToggleModal()
   }
 
   ngOnInit() {}

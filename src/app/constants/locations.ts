@@ -6,7 +6,46 @@ export const types = [
   { name: "market" },
   { name: "street" }
 ];
-
+export const places = [];
+export const nothing = [
+  "N",
+  "i",
+  "h",
+  "u",
+  "y",
+  "a",
+  " ",
+  "n",
+  "e",
+  " ",
+  "p",
+  "o",
+  "n",
+  "i",
+  "m",
+  "a",
+  "y",
+  "u",
+  " ",
+  "N",
+  "i",
+  "h",
+  "u",
+  "y",
+  "a",
+  " ",
+  "n",
+  "e",
+  " ",
+  "p",
+  "o",
+  "n",
+  "i",
+  "m",
+  "a",
+  "y",
+  "u"
+];
 export const mockData = [
   {
     _id: "grjvndhto493c61581c9fe11",

@@ -4,14 +4,14 @@ import { Headers } from "@angular/http";
 import { Router } from "@angular/router";
 import { Observable } from "rxjs";
 import { LocationService } from "./location.service";
-import { config } from './constants/locations'
+import { config } from "./constants/locations";
 
 @Injectable({
   providedIn: "root"
 })
 export class UserService {
-  public currentUser: Object;
-  isAuthorized: boolean = false;
+  public currentUser: object;
+  public isAuthorized: boolean = false;
 
   constructor(
     public http: HttpClient,
@@ -47,7 +47,7 @@ export class UserService {
     this.router.navigate(["/login"]);
     localStorage.removeItem("currentUser");
   }
-  
+
   getUsers() {
     return this.http.get(`${config.url}/all`);
   }
@@ -58,11 +58,11 @@ export class UserService {
   check() {
     return this.http.get(`${config.url}/check`);
   }
-  _setIsLogged(result): Observable<Object> {
+  _setIsLogged(result): Observable<object> {
     if (result.login) this.router.navigate(["/map"]);
     return (this.isAuthorized = result.login);
   }
-  _setCurrentUser(result): Observable<Object> {
+  _setCurrentUser(result): Observable<object> {
     return (this.currentUser = result.user);
   }
 }

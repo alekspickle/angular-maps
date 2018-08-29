@@ -21,9 +21,6 @@ export class AppComponent implements OnInit, AfterContentChecked {
   ) {
     if (userService.isAuthorized) this.isLogoutButtonShow = true;
   }
-  handleToggleModal(){
-    this.locationService.onToggleModal()
-  }
   handleLogout() {
     this.userService.logout();
   }
@@ -33,7 +30,6 @@ export class AppComponent implements OnInit, AfterContentChecked {
   ngAfterContentChecked() {
     this.username =
       this.userService.currentUser && this.userService.currentUser["name"];
-    this.isModalShow = this.locationService.isModalShow;
     if (this.userService.isAuthorized) this.isLogoutButtonShow = true;
   }
 }

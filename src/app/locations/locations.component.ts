@@ -1,9 +1,10 @@
 import {
   Component,
   OnInit,
-  OnChanges,
   AfterContentChecked,
-  Input
+  Input,
+  Output,
+  EventEmitter
 } from "@angular/core";
 import { UserService } from "../user.service";
 import { LocationService } from "../location.service";
@@ -14,17 +15,15 @@ import { LocationService } from "../location.service";
   styleUrls: ["./locations.component.css"]
 })
 export class LocationsComponent implements OnInit, AfterContentChecked {
-  @Input()
-  isModalShow: boolean;
-  @Input()
-  onClear;
-  @Input()
-  onDeleteLocation;
-  @Input()
-  onToggleMarkers;
+  @Output()
+  onDeleteLocation = new EventEmitter();
+  @Output()
+  onClear = new EventEmitter();
+  @Output()
+  onToggleMarkers = new EventEmitter();
   @Input()
   parentLocs;
-  allLocs: Object[] = [];
+  allLocs: object[] = [];
   showText: string = "Hide";
   constructor(
     private userService: UserService,
@@ -38,7 +37,7 @@ export class LocationsComponent implements OnInit, AfterContentChecked {
   }
 
   handleDiscardChanges() {
-    this.onClear();
+    this.onClear.emit();
   }
 
   handleToggleShow() {
@@ -46,11 +45,11 @@ export class LocationsComponent implements OnInit, AfterContentChecked {
     if (showText === "Hide") this.showText = "Show";
     else this.showText = "Hide";
 
-    this.onToggleMarkers();
+    this.onToggleMarkers.emit();
   }
 
   handleDelete(loc) {
-    this.onDeleteLocation(loc);
+    this.onDeleteLocation.emit(loc);
   }
 
   ngOnInit() {

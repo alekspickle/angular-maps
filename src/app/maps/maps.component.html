@@ -1,12 +1,13 @@
 <div class="map-section">
-    <app-locations [onClear]="handleClear" [onToggleMarkers]="handleToggleMarkers" [onDeleteLocation]="handleDeleteLocation"
+    <app-locations (onClear)="handleClear()" (onToggleMarkers)="handleToggleMarkers()" (onDeleteLocation)="handleDeleteLocation($event)"
         [parentLocs]="allLocs"></app-locations>
     <div class="GMap" #gmap></div>
     <ul>
         <li *ngFor></li>
     </ul>
 </div>
+
 <div *ngIf="isModalShow" class="modal">
-    <app-modal [handleEdit]="handleEditLocation" [marker]="currentMarker" [onToggleModal]="handleToggleModal"></app-modal>
+    <app-modal (onEdit)="handleEditLocation($event)" [marker]="currentMarker" (onToggleModal)="handleToggleModal()"></app-modal>
 </div>
 <a href="#" routerLink="/author">About author</a>

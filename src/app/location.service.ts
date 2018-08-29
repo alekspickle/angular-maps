@@ -12,9 +12,9 @@ export class LocationService {
  
   getUserLocations(user) {
     return this.http
-      .get<Object[]>(`${config.url}/location/${user._id}`)
+      .get<object[]>(`${config.url}/location/${user._id}`)
   }
-  saveCurrentLocations(locations: Object[]) {
+  saveCurrentLocations(locations: object[]) {
     return this.http.post(`${config.url}/location/save`, { locations });
   }
   createLocation(location: any) {

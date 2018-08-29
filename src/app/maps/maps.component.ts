@@ -22,11 +22,11 @@ type Loc = {
 export class MapsComponent implements OnInit, AfterViewInit {
   @ViewChild("gmap")
   gmapElement: any;
-  types: Object[] = types;
+  types: object[] = types;
   public isModalShow: boolean = false;
-  defLocs: Object[] = [];
-  public newLocs: Object[] = [];
-  public allLocs: Object[] = this.defLocs.concat(this.newLocs);
+  defLocs: object[] = [];
+  public newLocs: object[] = [];
+  public allLocs: object[] = this.defLocs.concat(this.newLocs);
   public currentMarker: Pos;
   public markers: google.maps.Marker[] = [];
   public isMarkersVisible: boolean = true;
@@ -102,12 +102,20 @@ export class MapsComponent implements OnInit, AfterViewInit {
         el["lng"] === this.currentMarker.lng
     );
     marker = { ...location };
+    console.log('edited', marker, 'all', this.allLocs);
   }
   handleDeleteLocation(location: any) {
     console.log("location", location);
-    this.newLocs.filter(el => location._id !== el["_id"]);
-    this.allLocs.filter(el => location._id !== el["_id"]);
-    console.log("all", this.allLocs, "new", this.newLocs);
+    this.newLocs = this.newLocs.filter(
+      el => location.lat !== el["lat"] && location.lng !== el["lng"]
+    );
+    this.allLocs = this.allLocs.filter(
+      el => location.lat !== el["lat"] && location.lng !== el["lng"]
+    );
+    this.markers.filter(
+      el => location.lat !== el["lat"] && location.lng !== el["lng"]
+    );
+    console.log("all", this.allLocs, "new", this.newLocs, "markers", this.markers);
   }
 
   handleToggleModal() {
@@ -173,9 +181,7 @@ export class MapsComponent implements OnInit, AfterViewInit {
       const locs: object[] = result["locations"];
       console.log("locations fetched", locs);
       this.defLocs = locs;
-      this.markers = locs.map(el =>
-        this._placeMarker({ lat: el["lat"], lng: el["lng"] })
-      );
+      locs.map(el => this._placeMarker({ lat: el["lat"], lng: el["lng"] }));
       this.allLocs = this.defLocs.concat(this.newLocs);
     });
 
@@ -203,9 +209,9 @@ export class MapsComponent implements OnInit, AfterViewInit {
         this.pos.lng = pos.coords.longitude;
       });
       const current = this.markers.find(
-        el => el["position"]
-        // el["position"]["lat"]() === this.pos.lat &&
-        // el["position"]["lng"]() === this.pos.lng
+        el =>
+          el["position"]["lat"]() === this.pos.lat &&
+          el["position"]["lng"]() === this.pos.lng
       );
       console.log("your position", current);
       if (!current) this._placeMarker(this.pos, true);

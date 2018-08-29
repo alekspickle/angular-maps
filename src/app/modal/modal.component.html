@@ -1,8 +1,8 @@
 <form #form="ngForm">
-  <h3 class="header">Create new location</h3>
+  <h3 class="header">Edit location</h3>
   <label>
     Name
-    <input [(ngModel)]="model.locationName" #locationName="ngModel" name="locationName" required minlength="4" type="text"> </label>
+    <input [(ngModel)]="model.name" #locationName="ngModel" name="name" required minlength="4" type="text">    </label>
   <div class="error">
     <span *ngIf="locationName.invalid && (locationName.dirty) && locationName.errors.required">enter location name</span>
   </div>
@@ -14,5 +14,5 @@
   <div class="error">
     <span *ngIf="type.invalid && (type.dirty) && type.errors.required">enter type please</span>
   </div>
-    <button (click)="handleEditLocation()" type="submit" save>Edit</button>
+  <button (click)="handleEditLocation()" type="submit" save>Edit</button>
 </form>

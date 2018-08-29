@@ -28,3 +28,58 @@ a {
   border-radius: 10px;
   font-family: monospace;
 }
+.places {
+  display: flex;
+  flex-direction: column;
+  width: 200px;
+  margin: 0 auto;
+  border-radius: 15px;
+  background-color: #0fb3ff;
+  padding: 1% 3%;
+}
+.places label {
+  text-align: center;
+}
+.places input{
+  margin: 3% 0;
+}
+form {
+  width: 220px;
+  padding: 3%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+form:children {
+  margin: 2%;
+}
+select {
+  text-align: center;
+  border: none;
+  padding: 8% 8%;
+  background-color: #cf0;
+  border-radius: 7px;
+  margin: 10px;
+}
+label input {
+  padding: 3% 10%;
+  border: none;
+  border-radius: 7px;
+  box-shadow: 1px 1px 8px #000;
+}
+button {
+  color: #9f0;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  padding: 3%;
+  background-color: #0fb3ff;
+  cursor: pointer;
+  transition: 0.5s;
+  outline: #9f0;
+}
+button:hover,
+button:focus {
+  color: snow;
+}

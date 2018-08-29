@@ -6,6 +6,10 @@ import { types } from ".././constants/locations";
 
 declare const google: any;
 type Pos = { lat: number; lng: number };
+type Search = {
+  radius: number;
+  type: string;
+};
 type Loc = {
   name: string;
   type: string;
@@ -23,8 +27,12 @@ export class MapsComponent implements OnInit, AfterViewInit {
   @ViewChild("gmap")
   gmapElement: any;
   types: object[] = types;
-  public isModalShow: boolean = false;
   defLocs: object[] = [];
+  form: Search = {
+    radius: 0,
+    type: ""
+  };
+  public isModalShow: boolean = false;
   public newLocs: object[] = [];
   public allLocs: object[] = this.defLocs.concat(this.newLocs);
   public currentMarker: Pos;
@@ -73,14 +81,14 @@ export class MapsComponent implements OnInit, AfterViewInit {
     marker.addListener("click", (event: google.maps.MouseEvent) =>
       this._markerHandler(event, marker)
     );
-    if (add)
-      this.handleAddLocation({
-        name: "New Location",
-        type: "park",
-        lat: location.lat,
-        lng: location.lng,
-        user_id: this.userService.currentUser["_id"] || "common"
-      });
+    // if (add)
+    //   this.handleAddLocation({
+    //     name: "New Location",
+    //     type: "park",
+    //     lat: location.lat,
+    //     lng: location.lng,
+    //     user_id: this.userService.currentUser["_id"] || "common"
+    //   });
     return marker;
   }
   handleChangeCurrentMarker(latLng: Pos) {
@@ -90,22 +98,23 @@ export class MapsComponent implements OnInit, AfterViewInit {
 
   handleAddLocation(location: Loc) {
     console.log(location, this.allLocs);
-
     this.newLocs.push(location);
     this.allLocs = this.defLocs.concat(this.newLocs);
-  }
-  handleEditLocation(location: Loc) {
-    console.log(location, this.allLocs);
     let marker = this.allLocs.find(
       el =>
         el["lat"] === this.currentMarker.lat &&
         el["lng"] === this.currentMarker.lng
     );
     marker = { ...location };
-    console.log('edited', marker, 'all', this.allLocs);
+    console.log("edited", marker, "all", this.allLocs);
   }
   handleDeleteLocation(location: any) {
     console.log("location", location);
+    this.locationService
+      .deleteLocation(location)
+      .subscribe(result => console.log("deletion result", result));
+    this.handleRefreshLocations();
+
     this.newLocs = this.newLocs.filter(
       el => location.lat !== el["lat"] && location.lng !== el["lng"]
     );
@@ -115,7 +124,14 @@ export class MapsComponent implements OnInit, AfterViewInit {
     this.markers.filter(
       el => location.lat !== el["lat"] && location.lng !== el["lng"]
     );
-    console.log("all", this.allLocs, "new", this.newLocs, "markers", this.markers);
+    console.log(
+      "all",
+      this.allLocs,
+      "new",
+      this.newLocs,
+      "markers",
+      this.markers
+    );
   }
 
   handleToggleModal() {
@@ -154,19 +170,21 @@ export class MapsComponent implements OnInit, AfterViewInit {
   }
 
   //PLACES
-  handleTogglePlaces(place) {
+  handleSearchPlaces() {
+    const {radius, type} = this.form
+    console.log("this.form", this.form, "from params", radius, type);
     const lat = this.currentMarker.lat;
     const lng = this.currentMarker.lng;
     const request = {
       location: new google.maps.LatLng(lat, lng),
-      radius: place.radius,
-      type: [place.type]
+      radius: radius,
+      type: [type]
     };
 
     const service = new google.maps.places.PlacesService(this.map);
-    service.nearbySearch(request, this.callback);
+    service.nearbySearch(request, this.placesCallback);
   }
-  callback(results, status) {
+  placesCallback(results, status) {
     if (status == google.maps.places.PlacesServiceStatus.OK) {
       for (let i = 0; i < results.length; i++) {
         const place = results[i];
@@ -174,8 +192,7 @@ export class MapsComponent implements OnInit, AfterViewInit {
       }
     }
   }
-
-  ngOnInit() {
+  handleRefreshLocations() {
     const user = this.userService.currentUser;
     this.locationService.getUserLocations(user).subscribe(result => {
       const locs: object[] = result["locations"];
@@ -184,7 +201,9 @@ export class MapsComponent implements OnInit, AfterViewInit {
       locs.map(el => this._placeMarker({ lat: el["lat"], lng: el["lng"] }));
       this.allLocs = this.defLocs.concat(this.newLocs);
     });
-
+  }
+  ngOnInit() {
+    this.handleRefreshLocations();
     //init map
     this.map = new google.maps.Map(this.gmapElement.nativeElement, {
       zoom: 11,
@@ -192,8 +211,7 @@ export class MapsComponent implements OnInit, AfterViewInit {
       streetViewControl: true,
       center: this._mapCenter(this.pos.lat, this.pos.lng)
     });
-
-    //add marker on click
+    //add marker on map click
     this.map.addListener("click", (event: google.maps.MouseEvent) => {
       console.log("click map", event);
       this._placeMarker(
@@ -201,7 +219,6 @@ export class MapsComponent implements OnInit, AfterViewInit {
         true
       );
     });
-
     //add current location marker
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(pos => {
@@ -213,7 +230,6 @@ export class MapsComponent implements OnInit, AfterViewInit {
           el["position"]["lat"]() === this.pos.lat &&
           el["position"]["lng"]() === this.pos.lng
       );
-      console.log("your position", current);
       if (!current) this._placeMarker(this.pos, true);
       return;
     }

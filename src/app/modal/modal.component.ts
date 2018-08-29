@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, EventEmitter, Output } from "@angular/core";
 import { UserService } from "../user.service";
 import { LocationService } from "../location.service";
+import { types } from ".././constants/locations";
 
 type Loc = {
   name: string;
@@ -23,14 +24,8 @@ export class ModalComponent implements OnInit {
   @Input()
   marker;
   title = `Add new Location`;
-  types = [
-    { name: "park" },
-    { name: "restaurant" },
-    { name: "sea" },
-    { name: "beach" },
-    { name: "market" },
-    { name: "street" }
-  ];
+  types: object[] = types
+  
   model: Loc = {
     name: "",
     type: "",

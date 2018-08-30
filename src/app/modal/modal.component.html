@@ -1,5 +1,5 @@
 <form #form="ngForm">
-  <h3 class="header">Edit location</h3>
+  <h3 class="header">Add location</h3>
   <label>
     Name
     <input [(ngModel)]="model.name" #locationName="ngModel" name="name" required minlength="4" type="text">    </label>
@@ -7,6 +7,7 @@
     <span *ngIf="locationName.invalid && (locationName.dirty) && locationName.errors.required">enter location name</span>
   </div>
   <label>
+    type
     <select [(ngModel)]="model.type" #type="ngModel" name="type">
       <option *ngFor="let o of types">{{o.name}}</option>
     </select>
@@ -14,5 +15,5 @@
   <div class="error">
     <span *ngIf="type.invalid && (type.dirty) && type.errors.required">enter type please</span>
   </div>
-  <button (click)="handleEditLocation()" type="submit" save>Edit</button>
+  <button (click)="handleEditLocation()" type="submit" save>Add</button>
 </form>

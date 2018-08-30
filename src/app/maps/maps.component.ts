@@ -1,4 +1,5 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from "@angular/core";
+import { Router } from "@angular/router";
 import {} from "@types/googlemaps";
 import { UserService } from "../user.service";
 import { LocationService } from "../location.service";
@@ -28,7 +29,7 @@ export class MapsComponent implements OnInit, AfterViewInit {
   gmapElement: any;
   types: object[] = types;
   defLocs: object[] = [];
-  form: Search = {
+  search: Search = {
     radius: 0,
     type: ""
   };
@@ -49,7 +50,8 @@ export class MapsComponent implements OnInit, AfterViewInit {
 
   constructor(
     private userService: UserService,
-    private locationService: LocationService
+    private locationService: LocationService,
+    private router: Router
   ) {}
 
   _markerHandler(event: google.maps.MouseEvent, marker: google.maps.Marker) {
@@ -81,6 +83,7 @@ export class MapsComponent implements OnInit, AfterViewInit {
     marker.addListener("click", (event: google.maps.MouseEvent) =>
       this._markerHandler(event, marker)
     );
+    this.handleChangeCurrentMarker(location)
     // if (add)
     //   this.handleAddLocation({
     //     name: "New Location",
@@ -171,8 +174,7 @@ export class MapsComponent implements OnInit, AfterViewInit {
 
   //PLACES
   handleSearchPlaces() {
-    const {radius, type} = this.form
-    console.log("this.form", this.form, "from params", radius, type);
+    const {radius, type} = this.search
     const lat = this.currentMarker.lat;
     const lng = this.currentMarker.lng;
     const request = {
@@ -185,11 +187,14 @@ export class MapsComponent implements OnInit, AfterViewInit {
     service.nearbySearch(request, this.placesCallback);
   }
   placesCallback(results, status) {
+    debugger;
+    console.log('we are in callback')
     if (status == google.maps.places.PlacesServiceStatus.OK) {
-      for (let i = 0; i < results.length; i++) {
-        const place = results[i];
-        this._placeMarker(place);
-      }
+      results.forEach(el => {
+        const place = el.geometry.location;
+        console.log('place',place);
+        // this._placeMarker(place);
+      })
     }
   }
   handleRefreshLocations() {
@@ -203,6 +208,7 @@ export class MapsComponent implements OnInit, AfterViewInit {
     });
   }
   ngOnInit() {
+    if(!this.userService.isAuthorized) this.router.navigate(["/login"])
     this.handleRefreshLocations();
     //init map
     this.map = new google.maps.Map(this.gmapElement.nativeElement, {

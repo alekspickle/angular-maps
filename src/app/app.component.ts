@@ -28,6 +28,7 @@ export class AppComponent implements OnInit, AfterContentChecked {
   ngOnInit() {
   }
   ngAfterContentChecked() {
+    // console.log("is online: ", window.navigator.onLine); //ONLINE CHECK
     this.username =
       this.userService.currentUser && this.userService.currentUser["name"];
     if (this.userService.isAuthorized) this.isLogoutButtonShow = true;

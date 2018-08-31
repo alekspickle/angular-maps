@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from "@angular/core";
+import { AfterContentInit, Component, OnInit, ViewChild } from "@angular/core";
 import { Router } from "@angular/router";
 import {} from "@types/googlemaps";
 import { UserService } from "../user.service";
@@ -24,7 +24,7 @@ type Loc = {
   templateUrl: "./maps.component.html",
   styleUrls: ["./maps.component.css"]
 })
-export class MapsComponent implements OnInit, AfterViewInit {
+export class MapsComponent implements OnInit, AfterContentInit {
   @ViewChild("gmap")
   gmapElement: any;
   types: object[] = types;
@@ -33,6 +33,7 @@ export class MapsComponent implements OnInit, AfterViewInit {
     radius: 0,
     type: ""
   };
+  action: string = "Add";
   public isModalShow: boolean = false;
   public newLocs: object[] = [];
   public allLocs: object[] = this.defLocs.concat(this.newLocs);
@@ -71,25 +72,35 @@ export class MapsComponent implements OnInit, AfterViewInit {
     return new google.maps.LatLng(lat, lng);
   }
 
+  /**
+   *
+   * @param location
+   * @param add
+   */
   _placeMarker(location: Pos, add?: boolean) {
+    const isExists = this.markers.find(
+      el =>
+        el.getPosition().lat() === location.lat &&
+        el.getPosition().lng() === location.lng
+    );
+    if (isExists) return; //TODO FIX
+    this.handleChangeCurrentMarker(location);
     const marker = new google.maps.Marker({
       position: location,
       map: this.map,
       draggable: true
     });
     // console.log("currentUser", this.userService.currentUser);
-    this.handleChangeCurrentMarker(location);
-    console.log("place marker", marker);
-    const isExists = this.markers.find(
-      // el => console.log("marker i suppose? ", el)
-      el => el["lat"] === location.lat && el["lng"] === location.lng
-    );
-    console.log("isExists", isExists);
-    if(isExists) return;
+    // console.log("place marker", marker, this.markers.length);
     this.markers.push(marker);
-    marker.addListener("click", (event: google.maps.MouseEvent) =>
-      this._markerHandler(event, marker)
-    );
+    marker.addListener("click", (event: google.maps.MouseEvent) => {
+      if (marker.getAnimation() !== null) {
+        marker.setAnimation(null);
+      } else {
+        marker.setAnimation(google.maps.Animation.BOUNCE);
+      }
+      this._markerHandler(event, marker);
+    });
     // if (add)
     //   this.handleAddLocation({
     //     name: "New Location",
@@ -102,7 +113,13 @@ export class MapsComponent implements OnInit, AfterViewInit {
   }
   handleChangeCurrentMarker(latLng: Pos) {
     this.currentMarker = latLng;
-    console.log("change current marker", latLng);
+    const element = this.markers.find(
+      el =>
+        el.getPosition().lat() === latLng.lat &&
+        el.getPosition().lng() === latLng.lng
+    );
+    if (element) this.action = "Edit";
+    else this.action = "Add";
   }
 
   handleAddLocation(location: Loc) {
@@ -119,35 +136,20 @@ export class MapsComponent implements OnInit, AfterViewInit {
   }
   handleDeleteLocation(location: any) {
     console.log("location", location);
-    this.locationService
-      .deleteLocation(location)
-      .subscribe(result => console.log("deletion result", result));
-    this.handleRefreshLocations();
-    console.log(
-      "all",
-      this.allLocs,
-      "new",
-      this.newLocs,
-      "markers",
-      this.markers
-    );
+    this.locationService.deleteLocation(location).subscribe(result => {
+      this.handleRefreshLocations();
+      console.log("deletion result", result);
+    });
   }
-
   handleToggleModal() {
     this.isModalShow = !this.isModalShow;
-    console.log(
-      "toggle modal",
-      this.isModalShow,
-      "is markers visible",
-      this.isMarkersVisible,
-      "markers",
-      this.markers,
-      "user",
-      this.userService.currentUser
-    );
+    console.log(this);
   }
+  
   handleToggleMarkers() {
     this.isMarkersVisible = !this.isMarkersVisible;
+    if (this.isMarkersVisible) this.handleSetMapOnAll(this.map);
+    else this.handleSetMapOnAll(null);
     console.log(
       "toggle modal",
       this.isModalShow,
@@ -158,16 +160,10 @@ export class MapsComponent implements OnInit, AfterViewInit {
       "user",
       this.userService.currentUser
     );
-  }
-  handleClear() {
-    this.newLocs = [];
-    this.allLocs = this.defLocs;
-    this.isModalShow = false;
-    this.markers = [];
   }
   handleSetMapOnAll(map) {
     const array = this.markers;
-    for (var i = 0; i < array.length; i++) {
+    for (let i = 0; i < array.length; i++) {
       array[i].setMap(map);
     }
   }
@@ -201,11 +197,17 @@ export class MapsComponent implements OnInit, AfterViewInit {
     const user = this.userService.currentUser;
     this.locationService.getUserLocations(user).subscribe(result => {
       const locs: object[] = result["locations"];
-      console.log("locations fetched", locs);
+      console.log("Refresh", locs);
       this.defLocs = locs;
       locs.map(el => this._placeMarker({ lat: el["lat"], lng: el["lng"] }));
       this.allLocs = this.defLocs.concat(this.newLocs);
     });
+  }
+  handleClear() {
+    this.newLocs = [];
+    this.allLocs = this.defLocs;
+    this.isModalShow = false;
+    this.markers = [];
   }
   ngOnInit() {
     if (!this.userService.isAuthorized) this.router.navigate(["/login"]);
@@ -232,22 +234,19 @@ export class MapsComponent implements OnInit, AfterViewInit {
       });
       const current = this.markers.find(
         el =>
-          el["position"]["lat"]() === this.pos.lat &&
-          el["position"]["lng"]() === this.pos.lng
+          el.getPosition().lat() === this.pos.lat &&
+          el.getPosition().lng() === this.pos.lng
       );
       if (!current) this._placeMarker(this.pos, true);
       return;
     }
   }
 
-  ngAfterViewInit() {
+  ngAfterContentInit() {
     //add all user markers
     this.allLocs.forEach(el =>
       this._placeMarker({ lat: el["lat"], lng: el["lng"] })
     );
     console.log("maps update");
-    //toggle markers
-    if (!this.isMarkersVisible) this.handleSetMapOnAll(null);
-    else this.handleSetMapOnAll(this.map);
   }
 }

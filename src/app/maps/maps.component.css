@@ -35,7 +35,7 @@ form {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  margin: 2% auto;
+  margin: 0 auto;
 }
 select {
   text-align: center;

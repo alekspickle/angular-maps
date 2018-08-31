@@ -18,6 +18,10 @@ export class LocationsComponent implements OnInit, AfterContentChecked {
   @Output()
   onDeleteLocation = new EventEmitter();
   @Output()
+  onSave = new EventEmitter();
+  @Output()
+  onEditLocation = new EventEmitter();
+  @Output()
   onClear = new EventEmitter();
   @Output()
   onToggleMarkers = new EventEmitter();
@@ -31,9 +35,10 @@ export class LocationsComponent implements OnInit, AfterContentChecked {
   ) {}
 
   handleSaveLocations() {
-    this.locationService.saveCurrentLocations(this.allLocs).subscribe(added => {
-      console.log("success", added);
-    });
+    this.locationService
+      .saveCurrentLocations(this.allLocs)
+      .subscribe(added => console.log("success", added));
+    this.onSave.emit();
   }
 
   handleDiscardChanges() {
@@ -41,8 +46,7 @@ export class LocationsComponent implements OnInit, AfterContentChecked {
   }
 
   handleToggleShow() {
-    const { showText } = this;
-    if (showText === "Hide") this.showText = "Show";
+    if (this.showText === "Hide") this.showText = "Show";
     else this.showText = "Hide";
 
     this.onToggleMarkers.emit();
@@ -50,6 +54,9 @@ export class LocationsComponent implements OnInit, AfterContentChecked {
 
   handleDelete(loc) {
     this.onDeleteLocation.emit(loc);
+  }
+  handleEdit(loc) {
+    this.onEditLocation.emit(loc);
   }
 
   ngOnInit() {

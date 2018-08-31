@@ -42,12 +42,13 @@ div button:hover,
 div button:focus {
   color: snow;
 }
-.edit {
+.icon {
   width: 2em;
   height: 2em;
   cursor: pointer;
+  margin: 3px;
 }
-.edit:hover{
+.icon:hover{
   opacity: 0.5;
   transition: 0.3s;
 }

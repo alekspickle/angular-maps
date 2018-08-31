@@ -18,15 +18,12 @@ export class AppComponent implements OnInit, AfterContentChecked {
     private userService: UserService,
     private locationService: LocationService,
     private router: Router
-  ) {
-    if (userService.isAuthorized) this.isLogoutButtonShow = true;
-  }
+  ) {}
   handleLogout() {
     this.userService.logout();
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
   ngAfterContentChecked() {
     // console.log("is online: ", window.navigator.onLine); //ONLINE CHECK
     this.username =

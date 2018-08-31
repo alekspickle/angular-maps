@@ -1,6 +1,6 @@
 <div class="map-section">
-    <app-locations (onClear)="handleClear()" (onToggleMarkers)="handleToggleMarkers()" (onDeleteLocation)="handleDeleteLocation($event)"
-        [parentLocs]="allLocs"></app-locations>
+    <app-locations (onSave)="handleRefreshLocations()" (onClear)="handleClear()" (onToggleMarkers)="handleToggleMarkers()" (onEditLocation)="handleEditLocation($event)"
+        (onDeleteLocation)="handleDeleteLocation($event)" [parentLocs]="allLocs"></app-locations>
     <div class="GMap" #gmap></div>
     <ul>
         <li *ngFor></li>
@@ -9,17 +9,17 @@
 <form #form="ngForm">
     <h3 class="header">Search locations</h3>
     <label>
-      radius
-      <input [(ngModel)]="search.radius" #radius="ngModel" name="radius" type="text">    </label>
+        radius
+        <input [(ngModel)]="search.radius" #radius="ngModel" name="radius" type="text"> </label>
     <label>
         type
-      <select [(ngModel)]="search.type" #type="ngModel" name="type">
-        <option *ngFor="let o of types">{{o.name}}</option>
-      </select>
+        <select [(ngModel)]="search.type" #type="ngModel" name="type">
+            <option *ngFor="let o of types">{{o.name}}</option>
+        </select>
     </label>
     <button (click)="handleSearchPlaces()" type="submit" save>Search</button>
-  </form>
+</form>
 <div *ngIf="isModalShow" class="modal">
-    <app-modal (onEdit)="handleAddLocation($event)" [marker]="currentMarker" (onToggleModal)="handleToggleModal()"></app-modal>
+    <app-modal (onEdit)="handleAddLocation($event)" [action]="action" [marker]="currentMarker" (onToggleModal)="handleToggleModal()"></app-modal>
 </div>
 <a href="#" routerLink="/author">About author</a>

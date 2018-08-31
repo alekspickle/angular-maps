@@ -3,7 +3,8 @@
   <ul>
     <li *ngFor="let location of allLocs">
       <p>{{location.name}}, {{location.type}}</p>
-      <img (click)="handleDelete(location)" class="edit" alt="edit icon" src="../../assets/delete.png" />
+      <img (click)="handleEdit(location)" class="icon" alt="edit icon" src="../../assets/edit.png" />
+      <img (click)="handleDelete(location)" class="icon" alt="delete icon" src="../../assets/delete.png" />
     </li>
   </ul>
   <div>

@@ -23,7 +23,9 @@ export class ModalComponent implements OnInit {
   onEdit = new EventEmitter();
   @Input()
   marker;
-  title = `Add new Location`;
+  @Input()
+  action: string;
+  title = `${this.action} location`;
   types: object[] = types
   
   model: Loc = {

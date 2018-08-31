@@ -7,12 +7,10 @@ import { config } from "./constants/locations";
   providedIn: "root"
 })
 export class LocationService {
-
   constructor(public http: HttpClient, public router: Router) {}
- 
+
   getUserLocations(user) {
-    return this.http
-      .get<object[]>(`${config.url}/location/${user._id}`)
+    return this.http.get<object[]>(`${config.url}/location/${user._id}`);
   }
   saveCurrentLocations(locations: object[]) {
     return this.http.post(`${config.url}/location/save`, { locations });
@@ -20,7 +18,9 @@ export class LocationService {
   createLocation(location: any) {
     return this.http.post(`${config.url}/location/create`, location);
   }
-
+  updateLocation(location: any) {
+    return this.http.put(`${config.url}/location/${location._id}`, location);
+  }
   deleteLocation(location: any) {
     return this.http.delete(`${config.url}/location/${location._id}`, location);
   }

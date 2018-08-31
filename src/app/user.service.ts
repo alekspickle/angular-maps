@@ -10,7 +10,7 @@ import { config } from "./constants/locations";
   providedIn: "root"
 })
 export class UserService {
-  public currentUser: object;
+  public currentUser: object = null;
   public isAuthorized: boolean = false;
 
   constructor(
@@ -45,7 +45,6 @@ export class UserService {
     this.currentUser = null;
     this.isAuthorized = false;
     this.router.navigate(["/login"]);
-    localStorage.removeItem("currentUser");
   }
 
   getUsers() {

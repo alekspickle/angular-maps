@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, EventEmitter, Output } from "@angular/core";
+import { Component, Input, EventEmitter, Output } from "@angular/core";
 import { UserService } from "../user.service";
 import { LocationService } from "../location.service";
 import { types } from ".././constants/locations";
@@ -16,7 +16,7 @@ type Loc = {
   templateUrl: "./modal.component.html",
   styleUrls: ["./modal.component.css"]
 })
-export class ModalComponent implements OnInit {
+export class ModalComponent {
   @Output()
   onToggleModal = new EventEmitter();
   @Output()
@@ -48,6 +48,4 @@ export class ModalComponent implements OnInit {
     });
     this.onToggleModal.emit();
   }
-
-  ngOnInit() {}
 }

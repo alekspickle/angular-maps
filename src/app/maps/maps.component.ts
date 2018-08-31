@@ -34,12 +34,12 @@ export class MapsComponent implements OnInit, AfterContentInit {
     type: ""
   };
   action: string = "Add";
-  public isModalShow: boolean = false;
-  public newLocs: object[] = [];
-  public allLocs: object[] = this.defLocs.concat(this.newLocs);
   public currentMarker: Pos;
-  public markers: google.maps.Marker[] = [];
+  public newLocs: object[] = [];
+  public isModalShow: boolean = false;
   public isMarkersVisible: boolean = true;
+  public allLocs: object[] = this.defLocs.concat(this.newLocs);
+  public markers: google.maps.Marker[] = [];
   infoWindow = new google.maps.InfoWindow({
     content: `<div>/('0'/)\\|/ (/_0_)/</div>`
   });
@@ -145,7 +145,7 @@ export class MapsComponent implements OnInit, AfterContentInit {
     this.isModalShow = !this.isModalShow;
     console.log(this);
   }
-  
+
   handleToggleMarkers() {
     this.isMarkersVisible = !this.isMarkersVisible;
     if (this.isMarkersVisible) this.handleSetMapOnAll(this.map);

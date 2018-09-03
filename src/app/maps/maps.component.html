@@ -2,6 +2,7 @@
     <app-locations (onSave)="handleRefreshLocations()" (onClear)="handleClear()" (onToggleMarkers)="handleToggleMarkers()" (onEditLocation)="handleEditLocation($event)"
         (onDeleteLocation)="handleDeleteLocation($event)" [parentLocs]="allLocs"></app-locations>
     <div class="GMap" #gmap></div>
+    <app-locations (onClear)="handleClear()" [isSearch]="true" [parentLocs]="nearbyLocs"></app-locations>
 </div>
 <p class="current-marker">[{{currentMarker.lat}},{{currentMarker.lng}}]</p>
 <form #form="ngForm">

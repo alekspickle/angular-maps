@@ -1,5 +1,6 @@
 <section>
-  <p>Your locations</p>
+  <p *ngIf="isWithoutButtons">Search</p>
+  <p *ngIf="!isWithoutButtons">Your locations</p>
   <ul>
     <li *ngFor="let location of allLocs">
       <p>{{location.name}}, {{location.type}}</p>
@@ -7,7 +8,7 @@
       <img (click)="handleDelete(location)" class="icon" alt="delete icon" src="../../assets/delete.png" />
     </li>
   </ul>
-  <div>
+  <div *ngIf="!isWithoutButtons">
     <button (click)="handleSaveLocations()" type="button" save>Save my locations</button>
     <button (click)="handleDiscardChanges()" type="button" save>Discard changes</button>
     <button class="changable" (click)="handleToggleShow()" type="button" save>{{showText}}</button>

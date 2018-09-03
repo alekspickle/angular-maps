@@ -14,7 +14,7 @@ import { LocationService } from "../location.service";
   templateUrl: "./locations.component.html",
   styleUrls: ["./locations.component.css"]
 })
-export class LocationsComponent implements OnInit, AfterContentChecked {
+export class LocationsComponent implements AfterContentChecked {
   @Output()
   onDeleteLocation = new EventEmitter();
   @Output()
@@ -27,6 +27,9 @@ export class LocationsComponent implements OnInit, AfterContentChecked {
   onToggleMarkers = new EventEmitter();
   @Input()
   parentLocs;
+  @Input()
+  isSearch;
+  isWithoutButtons: boolean = false;
   allLocs: object[] = [];
   showText: string = "Hide";
   constructor(
@@ -59,11 +62,9 @@ export class LocationsComponent implements OnInit, AfterContentChecked {
     this.onEditLocation.emit(loc);
   };
 
-  ngOnInit() {
-    this.allLocs = this.parentLocs;
-  }
-
   ngAfterContentChecked() {
     this.allLocs = this.parentLocs;
+    this.isWithoutButtons = this.isSearch;
+
   }
 }

@@ -34,30 +34,30 @@ export class LocationsComponent implements OnInit, AfterContentChecked {
     private locationService: LocationService
   ) {}
 
-  handleSaveLocations() {
+  handleSaveLocations = () => {
     this.locationService
       .saveCurrentLocations(this.allLocs)
       .subscribe(added => console.log("success", added));
     this.onSave.emit();
-  }
+  };
 
-  handleDiscardChanges() {
+  handleDiscardChanges = () => {
     this.onClear.emit();
-  }
+  };
 
-  handleToggleShow() {
+  handleToggleShow = () => {
     if (this.showText === "Hide") this.showText = "Show";
     else this.showText = "Hide";
 
     this.onToggleMarkers.emit();
-  }
+  };
 
-  handleDelete(loc) {
+  handleDelete = loc => {
     this.onDeleteLocation.emit(loc);
-  }
-  handleEdit(loc) {
+  };
+  handleEdit = loc => {
     this.onEditLocation.emit(loc);
-  }
+  };
 
   ngOnInit() {
     this.allLocs = this.parentLocs;

@@ -2,10 +2,8 @@
     <app-locations (onSave)="handleRefreshLocations()" (onClear)="handleClear()" (onToggleMarkers)="handleToggleMarkers()" (onEditLocation)="handleEditLocation($event)"
         (onDeleteLocation)="handleDeleteLocation($event)" [parentLocs]="allLocs"></app-locations>
     <div class="GMap" #gmap></div>
-    <ul>
-        <li *ngFor></li>
-    </ul>
 </div>
+<p class="current-marker">[{{currentMarker.lat}},{{currentMarker.lng}}]</p>
 <form #form="ngForm">
     <h3 class="header">Search locations</h3>
     <label>
@@ -22,4 +20,5 @@
 <div *ngIf="isModalShow" class="modal">
     <app-modal (onEdit)="handleAddLocation($event)" [action]="action" [marker]="currentMarker" (onToggleModal)="handleToggleModal()"></app-modal>
 </div>
+
 <a href="#" routerLink="/author">About author</a>

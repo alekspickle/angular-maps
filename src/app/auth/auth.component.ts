@@ -20,17 +20,10 @@ export class AuthComponent implements OnInit, AfterViewInit {
 
   model: Auth = { email: "", password: "" };
   constructor(private userService: UserService, private router: Router) {}
-  onSubmit() {
+  onSubmit = () => {
     const { email, password } = this.model;
     this.userService.login(email, password);
-  }
-  //TEST IF THERE ARE USERS
-  check() {
-    this.userService.check().subscribe(result => {
-      this.users$ = result["users"];
-      console.log("result", result);
-    });
-  }
+  };
 
   ngOnInit() {
     this.userService.getUsers().subscribe(data => {

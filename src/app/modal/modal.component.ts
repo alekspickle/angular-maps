@@ -25,27 +25,27 @@ export class ModalComponent {
   marker;
   @Input()
   action: string;
-  title = `${this.action} location`;
-  types: object[] = types
-  
+  title = `${this.action || "Add"} location`;
+  types: object[] = types;
+
   model: Loc = {
     name: "",
     type: "",
     lat: 0,
     lng: 0,
-    user_id: this.userService.currentUser['_id']
+    user_id: this.userService.currentUser["_id"]
   };
 
   constructor(
     private userService: UserService,
     private locationService: LocationService
   ) {}
-  handleEditLocation() {
+  handleEditLocation = () => {
     this.onEdit.emit({
       ...this.model,
       lat: this.marker.lat,
       lng: this.marker.lng
     });
     this.onToggleModal.emit();
-  }
+  };
 }

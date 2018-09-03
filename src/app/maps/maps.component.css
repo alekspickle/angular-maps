@@ -70,3 +70,10 @@ button:hover,
 button:focus {
   color: snow;
 }
+.current-marker {
+  margin: 0 auto;
+  font-size: 2em;
+  font-weight: 600;
+  color: #0fb3ff;
+  text-align: center;
+}

@@ -47,10 +47,8 @@ export class MapsComponent implements OnInit, AfterContentInit {
   public isMarkersVisible: boolean = true;
   public allLocs: object[] = this.defLocs.concat(this.newLocs);
   public markers: google.maps.Marker[] = [];
-  infoWindowText: string = '>o<'
-  infoWindow = new google.maps.InfoWindow({
-    content: `<div>${this.infoWindowText}</div>`
-  });
+  public infoWindowText: string = "";
+  infoWindow: google.maps.InfoWindow;
   private pos: Pos = {
     lat: 46.4598865,
     lng: 30.7717048
@@ -64,9 +62,14 @@ export class MapsComponent implements OnInit, AfterContentInit {
     private cdr: ChangeDetectorRef
   ) {}
   _changeMarkerName = (loc: Pos) => {
-    const marker = this.handleIsExists(loc)
-    console.log("change marker name", marker);
-  }
+    const location = this.allLocs.find(
+      el => el["lat"] === loc.lat && el["lng"] === loc.lng
+    );
+    this.infoWindow = new google.maps.InfoWindow({
+      content: `<div>${(location && location["name"]) || ">o<"}</div>`
+    });
+    console.log("change", location && location["name"]);
+  };
   _markerHandler = (
     event: google.maps.MouseEvent,
     marker: google.maps.Marker
@@ -101,6 +104,7 @@ export class MapsComponent implements OnInit, AfterContentInit {
       position: location,
       map: this.map,
       draggable: true
+      // name: isExists.title
     });
     //add places icon
     // if (gMarker && gMarker.icon) marker.markerIconUrl(gMarker.icon);
@@ -114,32 +118,34 @@ export class MapsComponent implements OnInit, AfterContentInit {
       this._markerHandler(event, marker);
     });
     if (gMarker)
-      this.handleAddLocation({
-        name: gMarker.name,
-        type: gMarker.types[0] || gMarker.types,
-        lat: location.lat,
-        lng: location.lng,
-        user_id: this.userService.currentUser["_id"]
-      }, true);
+      this.handleAddLocation(
+        {
+          name: gMarker.name,
+          type: gMarker.types[0] || gMarker.types,
+          lat: location.lat,
+          lng: location.lng,
+          user_id: this.userService.currentUser["_id"]
+        },
+        true
+      );
   };
-  handleIsExists = (loc : Pos) => {
+  handleIsExists = (loc: Pos) => {
     return this.markers.find(
-       el =>
-         el.getPosition().lat() === loc.lat &&
-         el.getPosition().lng() === loc.lng
-     );
-   }
+      el =>
+        el.getPosition().lat() === loc.lat && el.getPosition().lng() === loc.lng
+    );
+  };
   handleChangeCurrentMarker = (latLng: Pos) => {
     this.currentMarker = latLng;
-    this._changeMarkerName(latLng)
+    this._changeMarkerName(latLng);
 
-    const element = this.handleIsExists(latLng)
+    const element = this.handleIsExists(latLng);
     if (element) this.action = "Edit";
     else this.action = "Add";
   };
 
-  handleAddLocation = (location: Loc, isPlaces : boolean) => {
-    if(isPlaces) return this.nearbyLocs.push(location)
+  handleAddLocation = (location: Loc, isPlaces: boolean) => {
+    if (isPlaces) return this.nearbyLocs.push(location);
     this.newLocs.push(location);
     this.allLocs = this.defLocs.concat(this.newLocs);
   };
@@ -251,11 +257,7 @@ export class MapsComponent implements OnInit, AfterContentInit {
         this.pos.lat = pos.coords.latitude;
         this.pos.lng = pos.coords.longitude;
       });
-      const current = this.markers.find(
-        el =>
-          el.getPosition().lat() === this.pos.lat &&
-          el.getPosition().lng() === this.pos.lng
-      );
+      const current = this.handleIsExists(this.pos);
       if (!current) this._placeMarker(this.pos);
       return;
     }

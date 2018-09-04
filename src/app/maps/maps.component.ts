@@ -48,7 +48,9 @@ export class MapsComponent implements OnInit, AfterContentInit {
   public allLocs: object[] = this.defLocs.concat(this.newLocs);
   public markers: google.maps.Marker[] = [];
   public infoWindowText: string = "";
-  infoWindow: google.maps.InfoWindow;
+  infoWindow: google.maps.InfoWindow = new google.maps.InfoWindow({
+    content: `<div>${this.infoWindowText || ">o<"}</div>`
+  });
   private pos: Pos = {
     lat: 46.4598865,
     lng: 30.7717048
@@ -62,13 +64,15 @@ export class MapsComponent implements OnInit, AfterContentInit {
     private cdr: ChangeDetectorRef
   ) {}
   _changeMarkerName = (loc: Pos) => {
+    const marker = this.handleIsExists(loc);
     const location = this.allLocs.find(
       el => el["lat"] === loc.lat && el["lng"] === loc.lng
     );
-    this.infoWindow = new google.maps.InfoWindow({
-      content: `<div>${(location && location["name"]) || ">o<"}</div>`
-    });
-    console.log("change", location && location["name"]);
+    this.infoWindowText = location && location["name"];
+    this.infoWindow.close();
+    this.infoWindow.setPosition(loc);
+    this.infoWindow.open(this.map, marker);
+    console.log("change", this.infoWindowText);
   };
   _markerHandler = (
     event: google.maps.MouseEvent,
@@ -80,10 +84,14 @@ export class MapsComponent implements OnInit, AfterContentInit {
     // console.log(event.latLng.lat(), event.latLng.lng());
     //show modal
     this.handleToggleModal();
-    this.handleChangeCurrentMarker({
-      lat: event.latLng.lat(),
-      lng: event.latLng.lng()
-    });
+    this.handleChangeCurrentMarker(
+      {
+        lat: event.latLng.lat(),
+        lng: event.latLng.lng()
+      },
+      true
+    );
+    this.cdr.detectChanges();
   };
 
   _mapCenter = (lat: number, lng: number) => {
@@ -135,9 +143,9 @@ export class MapsComponent implements OnInit, AfterContentInit {
         el.getPosition().lat() === loc.lat && el.getPosition().lng() === loc.lng
     );
   };
-  handleChangeCurrentMarker = (latLng: Pos) => {
+  handleChangeCurrentMarker = (latLng: Pos, isClick?: boolean) => {
     this.currentMarker = latLng;
-    this._changeMarkerName(latLng);
+    if (isClick) this._changeMarkerName(latLng);
 
     const element = this.handleIsExists(latLng);
     if (element) this.action = "Edit";
@@ -153,25 +161,35 @@ export class MapsComponent implements OnInit, AfterContentInit {
     const index = this.allLocs.indexOf(location);
     console.log("location index", index);
   };
-  handleDeleteLocation = (location: any) => {
+  handleDeleteLocation = (location: Loc) => {
     console.log("location", location);
     this.locationService.deleteLocation(location).subscribe(result => {
+      this.handleSetMapOnAll(null);
       this.handleRefreshLocations();
+      this.handleSetMapOnAll(this.map);
+      this.cdr.detectChanges();
       console.log("deletion result", result);
     });
+    this.handleSetMapOnAll(null);
+    this.newLocs = this.newLocs.filter(
+      el => location.lat !== el["lat"] && location.lng !== el["lng"]
+    );
+    this.markers = this.markers.filter(
+      el =>
+        el.getPosition().lat() !== location.lat &&
+        el.getPosition().lng() !== location.lng
+    );
+    this.allLocs = this.defLocs.concat(this.newLocs);
+    this.handleSetMapOnAll(this.map);
   };
+  handleSaveLocations = () => {
+    this.locationService
+      .saveCurrentLocations(this.allLocs)
+      .subscribe(added => console.log("success", added), e => console.info(e));
+  };
+
   handleToggleModal = () => {
     this.isModalShow = !this.isModalShow;
-    console.log(
-      "modal",
-      this.isModalShow,
-      "markers",
-      this.isMarkersVisible,
-      "markers",
-      this.markers,
-      "current",
-      this.currentMarker
-    );
     this.cdr.detectChanges();
   };
 
@@ -179,16 +197,6 @@ export class MapsComponent implements OnInit, AfterContentInit {
     this.isMarkersVisible = !this.isMarkersVisible;
     if (this.isMarkersVisible) this.handleSetMapOnAll(this.map);
     else this.handleSetMapOnAll(null);
-    console.log(
-      "modal",
-      this.isModalShow,
-      "markers",
-      this.isMarkersVisible,
-      "markers",
-      this.markers,
-      "current",
-      this.currentMarker
-    );
   };
   handleSetMapOnAll = map => {
     const array = this.markers;
@@ -222,20 +230,22 @@ export class MapsComponent implements OnInit, AfterContentInit {
   };
   handleRefreshLocations = () => {
     const user = this.userService.currentUser;
+    this.handleSetMapOnAll(null);
     this.locationService.getUserLocations(user).subscribe(result => {
       const locs: object[] = result["locations"];
       console.log("Refresh", locs);
       this.defLocs = locs;
       locs.map(el => this._placeMarker({ lat: el["lat"], lng: el["lng"] }));
-      this.allLocs = this.defLocs.concat(this.newLocs);
+      this.allLocs = this.defLocs;
+      this.handleSetMapOnAll(this.map);
     });
   };
 
   handleClear = () => {
     this.newLocs = [];
-    this.allLocs = this.defLocs;
     this.isModalShow = false;
     this.markers = [];
+    this.handleRefreshLocations();
   };
   ngOnInit() {
     if (!this.userService.isAuthorized) this.router.navigate(["/login"]);
@@ -268,6 +278,5 @@ export class MapsComponent implements OnInit, AfterContentInit {
     this.allLocs.forEach(el =>
       this._placeMarker({ lat: el["lat"], lng: el["lng"] })
     );
-    console.log("maps update");
   }
 }

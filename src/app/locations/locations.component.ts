@@ -38,9 +38,6 @@ export class LocationsComponent implements AfterContentChecked {
   ) {}
 
   handleSaveLocations = () => {
-    this.locationService
-      .saveCurrentLocations(this.allLocs)
-      .subscribe(added => console.log("success", added));
     this.onSave.emit();
   };
 

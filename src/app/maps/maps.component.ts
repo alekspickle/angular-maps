@@ -64,7 +64,7 @@ export class MapsComponent implements OnInit, AfterContentInit {
     private cdr: ChangeDetectorRef
   ) {}
   _changeMarkerName = (loc: Pos) => {
-    const marker = this.handleIsExists(loc);
+    const marker = this.handleFindMarker(loc);
     const location = this.allLocs.find(
       el => el["lat"] === loc.lat && el["lng"] === loc.lng
     );
@@ -105,17 +105,32 @@ export class MapsComponent implements OnInit, AfterContentInit {
    */
   _placeMarker = (location: Pos, gMarker?: any) => {
     console.log("Check search", location);
-    const isExists = this.handleIsExists(location);
+    const isExists = this.handleFindMarker(location);
     if (isExists) return; //TODO FIX
     this.handleChangeCurrentMarker(location);
-    let marker = new google.maps.Marker({
-      position: location,
-      map: this.map,
-      draggable: true
-      // name: isExists.title
-    });
+    let marker;
     //add places icon
-    // if (gMarker && gMarker.icon) marker.markerIconUrl(gMarker.icon);
+    if (gMarker && gMarker.icon)
+      marker = new google.maps.Marker({
+        position: location,
+        map: this.map,
+        draggable: true,
+        icon: {
+          url: gMarker.icon,
+          size: new google.maps.Size(71, 71),
+          origin: new google.maps.Point(0, 0),
+          anchor: new google.maps.Point(0, 0),
+          scaledSize: new google.maps.Size(40, 50)
+        }
+        // icon: gMarker.icon,
+      });
+    else
+      marker = new google.maps.Marker({
+        position: location,
+        map: this.map,
+        draggable: true
+      });
+
     this.markers.push(marker);
     marker.addListener("click", (event: google.maps.MouseEvent) => {
       // if (marker.getAnimation() !== null) {
@@ -137,22 +152,32 @@ export class MapsComponent implements OnInit, AfterContentInit {
         true
       );
   };
-  handleIsExists = (loc: Pos) => {
+  handleFindMarker = (loc: Pos) => {
     return this.markers.find(
       el =>
         el.getPosition().lat() === loc.lat && el.getPosition().lng() === loc.lng
+    );
+  };
+  handleFindLocation = (loc: Pos) => {
+    return this.allLocs.find(
+      el => el["lat"] === loc.lat && el["lng"] === loc.lng
     );
   };
   handleChangeCurrentMarker = (latLng: Pos, isClick?: boolean) => {
     this.currentMarker = latLng;
     if (isClick) this._changeMarkerName(latLng);
 
-    const element = this.handleIsExists(latLng);
+    const element = this.handleFindLocation(latLng);
     if (element) this.action = "Edit";
     else this.action = "Add";
   };
 
   handleAddLocation = (location: Loc, isPlaces: boolean) => {
+    // const marker = this.handleFindMarker({
+    //   lat: location.lat,
+    //   lng: location.lng
+    // });
+    // if(marker)
     if (isPlaces) return this.nearbyLocs.push(location);
     this.newLocs.push(location);
     this.allLocs = this.defLocs.concat(this.newLocs);
@@ -164,23 +189,19 @@ export class MapsComponent implements OnInit, AfterContentInit {
   handleDeleteLocation = (location: Loc) => {
     console.log("location", location);
     this.locationService.deleteLocation(location).subscribe(result => {
-      this.handleSetMapOnAll(null);
       this.handleRefreshLocations();
-      this.handleSetMapOnAll(this.map);
-      this.cdr.detectChanges();
       console.log("deletion result", result);
     });
-    this.handleSetMapOnAll(null);
     this.newLocs = this.newLocs.filter(
       el => location.lat !== el["lat"] && location.lng !== el["lng"]
     );
-    this.markers = this.markers.filter(
-      el =>
-        el.getPosition().lat() !== location.lat &&
-        el.getPosition().lng() !== location.lng
-    );
+    // this.markers = this.markers.filter(
+    //   el =>
+    //     el.getPosition().lat() !== location.lat &&
+    //     el.getPosition().lng() !== location.lng
+    // );
     this.allLocs = this.defLocs.concat(this.newLocs);
-    this.handleSetMapOnAll(this.map);
+    this.cdr.detectChanges();
   };
   handleSaveLocations = () => {
     this.locationService
@@ -244,7 +265,6 @@ export class MapsComponent implements OnInit, AfterContentInit {
   handleClear = () => {
     this.newLocs = [];
     this.isModalShow = false;
-    this.markers = [];
     this.handleRefreshLocations();
   };
   ngOnInit() {
@@ -267,7 +287,7 @@ export class MapsComponent implements OnInit, AfterContentInit {
         this.pos.lat = pos.coords.latitude;
         this.pos.lng = pos.coords.longitude;
       });
-      const current = this.handleIsExists(this.pos);
+      const current = this.handleFindMarker(this.pos);
       if (!current) this._placeMarker(this.pos);
       return;
     }

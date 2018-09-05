@@ -16,11 +16,11 @@ import { LocationService } from "../location.service";
 })
 export class LocationsComponent implements AfterContentChecked {
   @Output()
-  onDeleteLocation = new EventEmitter();
+  onDelete = new EventEmitter();
   @Output()
   onSave = new EventEmitter();
   @Output()
-  onEditLocation = new EventEmitter();
+  onEdit = new EventEmitter();
   @Output()
   onClear = new EventEmitter();
   @Output()
@@ -53,10 +53,10 @@ export class LocationsComponent implements AfterContentChecked {
   };
 
   handleDelete = loc => {
-    this.onDeleteLocation.emit(loc);
+    this.onDelete.emit(loc);
   };
   handleEdit = loc => {
-    this.onEditLocation.emit(loc);
+    this.onEdit.emit(loc);
   };
 
   ngAfterContentChecked() {

@@ -58,5 +58,6 @@ export class ModalComponent implements AfterViewChecked {
 
   ngAfterViewChecked() {
     this.actionName = this.action
+    console.log( 'modal action', this.action);
   }
 }

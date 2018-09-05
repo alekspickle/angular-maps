@@ -5,7 +5,7 @@
     <li *ngFor="let location of allLocs">
       <p>{{location.name}}, {{location.type}}</p>
       <img *ngIf="!isWithoutButtons" (click)="handleEdit(location)" class="icon" alt="edit icon" src="../../assets/edit.png" />
-      <img *ngIf="!isWithoutButtons" (click)="handleDelete(location)" class="icon" alt="delete icon" src="../../assets/delete.png" />
+      <img (click)="handleDelete(location)" class="icon" alt="delete icon" src="../../assets/delete.png" />
     </li>
   </ul>
   <div *ngIf="!isWithoutButtons">

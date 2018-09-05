@@ -1,6 +1,6 @@
 <div class="map-section">
-    <app-locations (onSave)="handleSaveLocations()" (onClear)="handleClear()" (onToggleMarkers)="handleToggleMarkers()" (onEditLocation)="handleEditLocation($event)"
-        (onDeleteLocation)="handleDeleteLocation($event)" [parentLocs]="allLocs"></app-locations>
+    <app-locations (onSave)="handleSaveLocations()" (onClear)="handleClear()" (onToggleMarkers)="handleToggleMarkers()" (onEdit)="handleEditLocation($event)"
+        (onDelete)="handleDeleteLocation($event)" [parentLocs]="allLocs"></app-locations>
     <div class="GMap" #gmap></div>
     <app-locations (onClear)="handleClear()" [isSearch]="true" [parentLocs]="nearbyLocs"></app-locations>
 </div>

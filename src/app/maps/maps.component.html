@@ -1,10 +1,13 @@
 <div class="map-section">
     <app-locations (onSave)="handleSaveLocations()" (onClear)="handleClear()" (onToggleMarkers)="handleToggleMarkers()" (onEdit)="handleEditLocation($event)"
-        (onDelete)="handleDeleteLocation($event)" [parentLocs]="allLocs"></app-locations>
-    <div class="GMap" #gmap></div>
-    <app-locations (onClear)="handleClear()" [isSearch]="true" [parentLocs]="nearbyLocs"></app-locations>
+        (onDelete)="handleDeleteLocation($event)" [parentLocs]="allLocs" ></app-locations>
+    <div class="gmap">
+        <div class="GMap" #gmap></div>
+        * double click on location to toggle edit panel
+    </div>
+    <app-locations [isSearch]="true" [parentLocs]="nearbyLocs" (onEdit)="handleEditLocation($event)"></app-locations>
 </div>
-<p class="current-marker">[{{currentMarker.lat}},{{currentMarker.lng}}]</p>
+<p class="current-marker">[{{currentMarker && currentMarker.lat || 0}},{{currentMarker && currentMarker.lng || 0}}]</p>
 <form #form="ngForm">
     <h3 class="header">Search locations</h3>
     <label>
@@ -19,7 +22,7 @@
     <button (click)="handleSearchPlaces()" type="submit" save>Search</button>
 </form>
 <div *ngIf="isModalShow" class="modal">
-    <app-modal (onEdit)="handleAddLocation($event)" [action]="action" [marker]="currentMarker" (onToggleModal)="handleToggleModal()"></app-modal>
+    <app-modal (onEdit)="handleAddLocation($event)" (onUpdate)="handleUpdateLocation($event)" [isModalUpdate]="isUpdate" [marker]="currentMarker" (onToggleModal)="handleToggleModal()"></app-modal>
 </div>
 
 <a href="#" routerLink="/author">About author</a>

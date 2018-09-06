@@ -3,7 +3,7 @@ import {
   Input,
   EventEmitter,
   Output,
-  AfterViewChecked
+  AfterContentChecked
 } from "@angular/core";
 import { UserService } from "../user.service";
 import { LocationService } from "../location.service";
@@ -22,17 +22,19 @@ type Loc = {
   templateUrl: "./modal.component.html",
   styleUrls: ["./modal.component.css"]
 })
-export class ModalComponent implements AfterViewChecked {
+export class ModalComponent implements AfterContentChecked {
   @Output()
   onToggleModal = new EventEmitter();
   @Output()
   onEdit = new EventEmitter();
+  @Output()
+  onUpdate = new EventEmitter();
   @Input()
   marker;
   @Input()
-  action: string;
-  actionName: string = "Add";
-  title = `${this.action || this.actionName} location`;
+  isModalUpdate: boolean;
+  isUpdate: boolean = false;
+  label: string = "Add";
   types: object[] = types;
 
   model: Loc = {
@@ -47,6 +49,14 @@ export class ModalComponent implements AfterViewChecked {
     private userService: UserService,
     private locationService: LocationService
   ) {}
+  handleUpdateLocation = () => {
+    this.onEdit.emit({
+      ...this.model,
+      lat: this.marker.lat,
+      lng: this.marker.lng
+    });
+    this.onToggleModal.emit();
+  };
   handleEditLocation = () => {
     this.onEdit.emit({
       ...this.model,
@@ -56,8 +66,8 @@ export class ModalComponent implements AfterViewChecked {
     this.onToggleModal.emit();
   };
 
-  ngAfterViewChecked() {
-    this.actionName = this.action
-    console.log( 'modal action', this.action);
+  ngAfterContentChecked() {
+    this.isUpdate = this.isModalUpdate;
+    this.label = this.isUpdate && "Add" || "Edit"
   }
 }

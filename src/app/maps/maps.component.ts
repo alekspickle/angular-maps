@@ -1,5 +1,6 @@
 import {
-  AfterContentInit,
+  AfterViewInit,
+  AfterContentChecked,
   Component,
   OnInit,
   ViewChild,
@@ -30,7 +31,7 @@ type Loc = {
   templateUrl: "./maps.component.html",
   styleUrls: ["./maps.component.css"]
 })
-export class MapsComponent implements OnInit, AfterContentInit {
+export class MapsComponent implements OnInit, AfterViewInit {
   @ViewChild("gmap")
   gmapElement: any;
   types: object[] = types;
@@ -39,8 +40,11 @@ export class MapsComponent implements OnInit, AfterContentInit {
     radius: 0,
     type: ""
   };
-  public action: string = "Add";
-  public currentMarker: Pos;
+  public currentMarker: Pos = {
+    lat: 46.473,
+    lng: 30.7412
+  };
+  public isUpdate: boolean = false;
   public newLocs: object[] = [];
   public nearbyLocs: object[] = [];
   public isModalShow: boolean = false;
@@ -50,10 +54,7 @@ export class MapsComponent implements OnInit, AfterContentInit {
   public nearbyMarkers: google.maps.Marker[] = [];
   public infoWindowText: string = "";
   public infoWindow: google.maps.InfoWindow = new google.maps.InfoWindow();
-  private pos: Pos = {
-    lat: 46.4598865,
-    lng: 30.7717048
-  };
+  private pos: Pos = Object.assign(this.currentMarker);
   private map: any;
 
   constructor(
@@ -64,41 +65,45 @@ export class MapsComponent implements OnInit, AfterContentInit {
   ) {}
 
   _changeMarkerName = (loc: Pos, marker?: google.maps.Marker) => {
-    const m = this.handleFindMarker(loc);
-    const location = this.allLocs.find(
-      el => el["lat"] === loc.lat && el["lng"] === loc.lng
-    );
-    const name =
-      (m && m["name"]) ||
-      (marker && marker["name"]) ||
-      (location && location["name"]);
     this.infoWindow.close();
+    const isCurrent = Boolean(
+      this.currentMarker.lat === loc.lat && this.currentMarker.lng === loc.lng
+    );
+    console.log("change name", "isCurrent", isCurrent);
+    if (isCurrent) return;
+    const m = this.handleFindMarker(loc) || marker;
+    const location = this.handleFindLocation(loc);
+    const name = (m && m["name"]) || (location && location["name"]);
     if (name) {
       this.infoWindow.setPosition(loc);
       this.infoWindow.setContent(name);
-      this.infoWindow.open(this.map, marker);
+      this.infoWindow.open(this.map, m);
+      // console.log("change", name);
     }
-    console.log("change", this.infoWindowText);
   };
 
   _markerHandler = (
     event: google.maps.MouseEvent,
     marker: google.maps.Marker
   ) => {
-    //show modal
-    this.handleChangeCurrentMarker(
-      {
-        lat: event.latLng.lat(),
-        lng: event.latLng.lng()
-      },
-      marker
+    const loc = {
+      lat: +event.latLng.lat().toFixed(4),
+      lng: +event.latLng.lng().toFixed(4)
+    };
+    console.log(
+      "event",
+      loc,
+      this.handleFindLocation(loc),
+      this.handleFindMarker(loc)
     );
+    //show modal
+    this.handleChangeCurrentMarker(loc, marker);
     this.cdr.detectChanges(); //robot, do your work!
   };
+
   _markerModalHandler = () => {
     //show modal
     this.handleToggleModal();
-    this.cdr.detectChanges(); //robot, do your work!
   };
 
   _mapCenter = (lat: number, lng: number) => {
@@ -111,15 +116,19 @@ export class MapsComponent implements OnInit, AfterContentInit {
    * @param gMarker to add places icon
    */
   _placeMarker = (location: Pos, gMarker?: any) => {
+    const loc = {
+      lat: +location.lat.toFixed(4),
+      lng: +location.lng.toFixed(4)
+    };
     // console.log("place marker", location);
-    this.handleChangeCurrentMarker(location);
+    this.handleChangeCurrentMarker(loc);
     let marker;
     //add places icon
     if (gMarker && gMarker.icon) {
-      const isExists = this.handleFindMarker(location);
+      const isExists = this.handleFindMarker(loc);
       if (isExists) return;
       marker = new google.maps.Marker({
-        position: location,
+        position: loc,
         map: this.map,
         draggable: true,
         icon: {
@@ -132,7 +141,7 @@ export class MapsComponent implements OnInit, AfterContentInit {
       });
       this.nearbyMarkers.push(marker);
     } else {
-      const isExists = this.handleFindMarker(location);
+      const isExists = this.handleFindMarker(loc);
       if (isExists) return;
       marker = new google.maps.Marker({
         position: location,
@@ -145,7 +154,7 @@ export class MapsComponent implements OnInit, AfterContentInit {
     marker.addListener("click", (event: google.maps.MouseEvent) => {
       this._markerHandler(event, marker);
     });
-    marker.addListener("dblclick", (event: google.maps.MouseEvent) => {
+    marker.addListener("dblclick", () => {
       this._markerModalHandler();
     });
     if (gMarker)
@@ -153,8 +162,8 @@ export class MapsComponent implements OnInit, AfterContentInit {
         {
           name: gMarker.name,
           type: gMarker.types[0] || gMarker.types,
-          lat: location.lat,
-          lng: location.lng,
+          lat: loc.lat,
+          lng: loc.lng,
           user_id: this.userService.currentUser["_id"]
         },
         true
@@ -175,60 +184,66 @@ export class MapsComponent implements OnInit, AfterContentInit {
   };
 
   handleFindLocation = (loc: Pos) => {
-    return this.allLocs.find(
-      el => el["lat"] === loc.lat && el["lng"] === loc.lng
+    return (
+      this.allLocs.find(el => el["lat"] === loc.lat && el["lng"] === loc.lng) ||
+      this.nearbyLocs.find(el => el["lat"] === loc.lat && el["lng"] === loc.lng)
     );
   };
 
-  handleChangeCurrentMarker = (latLng: Pos, marker?: google.maps.Marker) => {
-    this.currentMarker = latLng;
-    this._changeMarkerName(latLng, marker);
-    const element = this.handleFindLocation(latLng);
+  handleChangeCurrentMarker = (loc: Pos, marker?: google.maps.Marker) => {
+    this._changeMarkerName(loc, marker);
+    const element = this.handleFindLocation(loc);
     if (element) this.handleToggleAction(false);
     else this.handleToggleAction(true);
+    this.currentMarker = loc;
   };
 
   handleToggleAction = (add: boolean) => {
-    return (this.action = (add && "Add") || "Edit");
+    return (this.isUpdate = add);
   };
 
-  handleAddLocation = (location: Loc, isPlaces: boolean) => {
+  handleAddLocation = (location: Loc, isPlaces?: boolean) => {
     if (isPlaces) return this.nearbyLocs.push(location);
     this._changeMarkerName(location);
     this.newLocs.push(location);
     this.allLocs = this.defLocs.concat(this.newLocs);
   };
-
+  handleUpdateLocation = (loc: Loc) => {
+    console.log("update", loc);
+  };
   handleEditLocation = (location: Loc) => {
+    const loc = {
+      lat: location.lat,
+      lng: location.lng
+    };
+    const marker = this.handleFindMarker(loc);
     this.handleToggleAction(false);
-    this.isModalShow = true;
-    const index = this.allLocs.indexOf(location);
-    console.log("location index", index);
-    this.cdr.detectChanges(); //robot, do your work!
+    this.handleChangeCurrentMarker(loc, marker);
+    this.isModalShow = !this.isModalShow;
   };
 
+  //TODO: marker is not deleted after location is
   handleDeleteLocation = (location: Loc) => {
     console.log("location", location);
     this.locationService.deleteLocation(location).subscribe(result => {
-      this.handleRefreshLocations();
       console.log("deletion result", result);
+      this.newLocs = this.newLocs.filter(
+        el => location.lat !== el["lat"] && location.lng !== el["lng"]
+      );
+      this.allLocs = this.defLocs.concat(this.newLocs);
+      this.handleRefreshLocations();
+      this.cdr.detectChanges(); //robot, do your work!
     });
-    this.newLocs = this.newLocs.filter(
-      el => location.lat !== el["lat"] && location.lng !== el["lng"]
-    );
-    // this.markers = this.markers.filter(
-    //   el =>
-    //     el.getPosition().lat() !== location.lat &&
-    //     el.getPosition().lng() !== location.lng
-    // );
-    this.allLocs = this.defLocs.concat(this.newLocs);
-    this.cdr.detectChanges(); //robot, do your work!
   };
 
   handleSaveLocations = () => {
-    this.locationService
-      .saveCurrentLocations(this.allLocs)
-      .subscribe(added => console.log("success", added), e => console.info(e));
+    this.locationService.saveCurrentLocations(this.allLocs).subscribe(
+      added => {
+        console.log("success", added);
+        this.handleRefreshLocations();
+      },
+      e => console.info(e)
+    );
   };
 
   handleToggleModal = () => {
@@ -285,6 +300,7 @@ export class MapsComponent implements OnInit, AfterContentInit {
     this.locationService.getUserLocations(user).subscribe(result => {
       const locs: object[] = result["locations"];
       console.log("Refresh", locs);
+      this.markers = [];
       this.defLocs = locs;
       locs.map(el => this._placeMarker({ lat: el["lat"], lng: el["lng"] }));
       this.allLocs = this.defLocs;
@@ -297,6 +313,7 @@ export class MapsComponent implements OnInit, AfterContentInit {
     this.nearbyLocs = [];
     this.isModalShow = false;
     this.handleRefreshLocations();
+    console.log(this.markers);
   };
   ngOnInit() {
     if (!this.userService.isAuthorized) this.router.navigate(["/login"]);
@@ -308,26 +325,51 @@ export class MapsComponent implements OnInit, AfterContentInit {
       streetViewControl: true,
       center: this._mapCenter(this.pos.lat, this.pos.lng)
     });
-    //add marker on map click
+    //add marker on click
     this.map.addListener("click", (event: google.maps.MouseEvent) => {
       this._placeMarker({ lat: event.latLng.lat(), lng: event.latLng.lng() });
     });
     //add current location marker
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(pos => {
-        this.pos.lat = pos.coords.latitude;
-        this.pos.lng = pos.coords.longitude;
-      });
+      navigator.geolocation.getCurrentPosition(
+        pos => {
+          this.pos.lat = +pos.coords.latitude.toFixed(4);
+          this.pos.lng = +pos.coords.longitude.toFixed(4);
+        },
+        err => console.log("navigator get position error", err.message)
+      );
       const current = this.handleFindMarker(this.pos);
-      if (!current) this._placeMarker(this.pos);
-      return;
+      if (!current) {
+        this.handleAddLocation(
+          {
+            name: "You are here",
+            type: "here",
+            lat: this.pos.lat,
+            lng: this.pos.lng,
+            user_id: this.userService.currentUser["_id"]
+          },
+          true
+        );
+        this._placeMarker(this.pos);
+      }
+
+      this.cdr.detectChanges(); //robot, do your work!
     }
   }
 
-  ngAfterContentInit() {
+  ngAfterViewInit() {
     //add all user markers
-    this.allLocs.forEach(el =>
-      this._placeMarker({ lat: el["lat"], lng: el["lng"] })
-    );
+    this.handleSetMapOnAll(null);
+    this.allLocs.forEach((
+      el //ALL
+    ) => this._placeMarker({ lat: el["lat"], lng: el["lng"] }));
+    this.nearbyLocs.forEach((
+      el //NEARBY
+    ) => this._placeMarker({ lat: el["lat"], lng: el["lng"] }));
+    this.handleSetMapOnAll(this.map);
   }
+
+  // ngAfterContentChecked() {
+  //   console.log("this.allLocs", this.allLocs);
+  // }
 }

@@ -62,6 +62,5 @@ export class LocationsComponent implements AfterContentChecked {
   ngAfterContentChecked() {
     this.allLocs = this.parentLocs;
     this.isWithoutButtons = this.isSearch;
-
   }
 }

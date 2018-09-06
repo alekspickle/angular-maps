@@ -1,5 +1,5 @@
 <form #form="ngForm">
-  <h3 class="header">{{title}}</h3>
+  <h3 class="header">{{label}} location</h3>
   <label>
     Name
     <input [(ngModel)]="model.name" #locationName="ngModel" name="name" required minlength="4" type="text">    </label>
@@ -15,5 +15,5 @@
   <div class="error">
     <span *ngIf="type.invalid && (type.dirty) && type.errors.required">enter type please</span>
   </div>
-  <button (click)="handleEditLocation()" type="submit" save>{{actionName}}</button>
+  <button (click)="isUpdate && handleUpdateLocation() || handleEditLocation()" type="submit" save>{{label}}</button>
 </form>

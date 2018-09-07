@@ -39,11 +39,14 @@ button {
   border-radius: 10px;
   align-self: center;
   outline: #ff0;
+  transition: 0.3s;
 }
-button:hover {
+button:hover,
+button:focus {
   color: #0fb3ffdd;
-  background-color: #00fff3;
+  background-color: #fff;
 }
+
 
 .error {
   text-align: center;

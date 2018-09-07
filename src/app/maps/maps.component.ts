@@ -10,7 +10,6 @@ import {} from "@types/googlemaps";
 import { UserService } from "../user.service";
 import { LocationService } from "../location.service";
 import { types } from ".././constants/locations";
-import { elementStyling } from "@angular/core/src/render3/instructions";
 
 declare let google: any;
 type Pos = { lat: number; lng: number };

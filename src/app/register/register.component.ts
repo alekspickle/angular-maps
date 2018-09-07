@@ -2,7 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { Observable } from "rxjs";
 import { UserService } from "../user.service";
-import { map, catchError } from "rxjs/operators";
+import { catchError } from "rxjs/operators";
 
 type Register = {
   email: string;
@@ -20,7 +20,7 @@ export class RegisterComponent implements OnInit {
   email: string;
   name: string;
   password: string;
-
+  isResponded: boolean = false
   model: Register = { email: "", name: "", password: "", userExists: false };
 
   constructor(private userData: UserService, private router: Router) {}
@@ -33,16 +33,17 @@ export class RegisterComponent implements OnInit {
       .pipe(
         catchError(val => {
           this.handleExists();
-          return `Cought: ${val}`;
+          return val;
         })
       )
       .subscribe(e => {
         this.handleSetRegistered(e);
-        console.log("create user response", e);
       });
   }
-  handleSetRegistered(response): Observable<Object> {
-    if (response.registered) this.router.navigate(["/login"]);
+  handleSetRegistered(response): Observable<object> {
+    if (response.registered) {
+      this.isResponded = true
+      this.router.navigate(["/login"]);}
     return;
   }
   ngOnInit() {}

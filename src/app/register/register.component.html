@@ -1,10 +1,13 @@
-<form #form="ngForm">
+<form #form="ngForm" (ngSubmit)="handleRegister()">
   <div class="header">Register</div>
   <div class="error">
     <span *ngIf="model.userExists">User with this e-mail allready exists.</span>
   </div>
+  <div class="error">
+    <span *ngIf="isResponded">{{result}}</span>
+  </div>
   <label>
-    <input [(ngModel)]="model.email" #email="ngModel" name="email" required minlength="4" type="text"> E-mail
+    <input [(ngModel)]="model.email" #email="ngModel" name="email" required minlength="4" type="email" email> E-mail
   </label>
   <div class="error">
     <span *ngIf="email.invalid && (email.dirty)&&email.errors.required">E-mail is required</span>
@@ -16,14 +19,14 @@
     <span *ngIf="name.invalid && (name.dirty)&&name.errors.required">Name is required</span>
   </div>
   <label>
-    <input [(ngModel)]="model.password" #password="ngModel" name="password" required minlength="8" type="text"> Password
+    <input [(ngModel)]="model.password" #password="ngModel" name="password" required minlength="8" type="password"> Password
   </label>
   <div class="error">
     <span *ngIf="password.invalid && (password.dirty)&&password.errors.required">For sure password is required anyway.</span>
   </div>
   <div class="button-block">
     <button routerLink="/login" type="button" save>Return to login</button>
-    <button (click)="handleRegister()" type="submit" save>Register</button>
+    <button  type="submit" save>Register</button>
   </div>
 </form>
 <a href="#" routerLink="/author">About author</a>

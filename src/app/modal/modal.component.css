@@ -10,6 +10,27 @@ form {
   flex-direction: column;
   justify-content: space-between;
 }
+h3 {
+  margin: 0;
+}
+form > button:first-child {
+  color: #9f0;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  background-color: #0fb3ff;
+  cursor: pointer;
+  transition: 0.5s;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  margin-right: 0;
+  box-shadow: none;
+}
+form > button:first-child:hover,
+form > button:first-child:focus {
+  box-shadow: 1px 1px 8px #000;
+}
 select {
   text-align: center;
   border: none;

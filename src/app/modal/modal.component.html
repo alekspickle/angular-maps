@@ -1,4 +1,5 @@
-<form #form="ngForm">
+<form #form="ngForm" (ngSubmit)="handleEditLocation()">
+  <button type="button" class="close" (click)="handleCloseModal()">x</button>
   <h3 class="header">{{label}} location</h3>
   <label>
     Name
@@ -9,11 +10,11 @@
   <label>
     type
     <select [(ngModel)]="model.type" #type="ngModel" name="type">
-      <option *ngFor="let o of types">{{o.name}}</option>
+      <option *ngFor="let o of types" [ngValue]="o.name">{{o.name}}</option>
     </select>
   </label>
   <div class="error">
     <span *ngIf="type.invalid && (type.dirty) && type.errors.required">enter type please</span>
   </div>
-  <button (click)="isUpdate && handleUpdateLocation() || handleEditLocation()" type="submit" save>{{label}}</button>
+  <button type="submit" save>{{label}}</button>
 </form>

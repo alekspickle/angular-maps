@@ -19,7 +19,7 @@ export class LocationService {
     return this.http.post(`${config.url}/location/create`, location);
   }
   updateLocation(location: any) {
-    return this.http.put(`${config.url}/location/${location._id}`, location);
+    return this.http.put(`${config.url}/location/update`, location);
   }
   deleteLocation(location: any) {
     return this.http.delete(`${config.url}/location/${location._id}`, location);

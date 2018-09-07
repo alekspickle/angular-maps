@@ -45,29 +45,28 @@ export class ModalComponent implements AfterContentChecked {
     user_id: this.userService.currentUser["_id"]
   };
 
-  constructor(
-    private userService: UserService,
-    private locationService: LocationService
-  ) {}
-  handleUpdateLocation = () => {
-    this.onEdit.emit({
-      ...this.model,
-      lat: this.marker.lat,
-      lng: this.marker.lng
-    });
+  constructor(private userService: UserService) {}
+  handleCloseModal = () => {
     this.onToggleModal.emit();
   };
   handleEditLocation = () => {
-    this.onEdit.emit({
-      ...this.model,
-      lat: this.marker.lat,
-      lng: this.marker.lng
-    });
+    if (this.isUpdate)
+      this.onUpdate.emit({
+        ...this.model,
+        lat: this.marker.lat,
+        lng: this.marker.lng
+      });
+    else
+      this.onEdit.emit({
+        ...this.model,
+        lat: this.marker.lat,
+        lng: this.marker.lng
+      });
     this.onToggleModal.emit();
   };
 
   ngAfterContentChecked() {
     this.isUpdate = this.isModalUpdate;
-    this.label = this.isUpdate && "Add" || "Edit"
+    this.label = (this.isUpdate && "Add") || "Edit";
   }
 }

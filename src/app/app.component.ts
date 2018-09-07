@@ -1,33 +1,29 @@
-import { Component, OnInit, AfterContentChecked } from "@angular/core";
-import { Router } from "@angular/router";
+import { Component, AfterContentChecked } from "@angular/core";
 import { UserService } from "./user.service";
-import { LocationService } from "./location.service";
 
 @Component({
   selector: "app-root",
   templateUrl: "./app.component.html",
   styleUrls: ["./app.component.css"]
 })
-export class AppComponent implements OnInit, AfterContentChecked {
+export class AppComponent implements AfterContentChecked {
   username: string =
     this.userService.currentUser && this.userService.currentUser["name"];
-  title = `Welcome to the club ${this.username || ""}`;
+  title = ``;
   isLogoutButtonShow: boolean = false;
   isModalShow: boolean = false;
   constructor(
     private userService: UserService,
-    private locationService: LocationService,
-    private router: Router
   ) {}
   handleLogout() {
     this.userService.logout();
   }
 
-  ngOnInit() {}
   ngAfterContentChecked() {
     // console.log("is online: ", window.navigator.onLine); //ONLINE CHECK
     this.username =
       this.userService.currentUser && this.userService.currentUser["name"];
+      this.title = `Welcome to the club ${this.username || ""}`
     if (this.userService.isAuthorized) this.isLogoutButtonShow = true;
   }
 }

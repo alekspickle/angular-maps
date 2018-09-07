@@ -4,6 +4,10 @@ export const types = [
   { name: "sea" },
   { name: "beach" },
   { name: "market" },
+  { name: "cafe" },
+  { name: "gallery" },
+  { name: "museum" },
+  { name: "bar" },
   { name: "street" }
 ];
 export const places = [];

@@ -8,18 +8,21 @@ import { UserService } from "./user.service";
   styleUrls: ["./app.component.css"]
 })
 export class AppComponent implements OnInit, AfterContentChecked {
-  username: string =
-    this.userService.currentUser && this.userService.currentUser["name"];
+  username: string = "";
   title = ``;
   isLogoutButtonShow: boolean = false;
   isModalShow: boolean = false;
+
   constructor(private userService: UserService, private router: Router) {}
+
   handleLogout() {
     this.userService.logout();
   }
+
   ngOnInit() {
     this.router.navigate(["/"]);
   }
+  
   ngAfterContentChecked() {
     // console.log("is online: ", window.navigator.onLine); //ONLINE CHECK
     this.username =

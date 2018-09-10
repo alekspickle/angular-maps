@@ -5,12 +5,20 @@ import { Router } from "@angular/router";
 import { Observable } from "rxjs";
 import { LocationService } from "./location.service";
 import { config } from "./constants/locations";
-
+type User = {
+  _id: string;
+  email: string;
+  name: string;
+  password: string;
+  createdAt: Date;
+  updatedAt: Date;
+  __v?: number;
+};
 @Injectable({
   providedIn: "root"
 })
 export class UserService {
-  public currentUser: object = null;
+  public currentUser: User = null;
   public isAuthorized: boolean = false;
 
   constructor(
